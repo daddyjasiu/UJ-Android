@@ -6,26 +6,49 @@
     android:layout_height="match_parent"
     tools:context=".ShoppingScreen">
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="197dp"
-        android:layout_height="67dp"
-        android:layout_marginTop="28dp"
-        android:text="Product List"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
+    <ScrollView
+        android:layout_width="391dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/textView5"
-        android:layout_width="210dp"
-        android:layout_height="115dp"
-        android:layout_marginTop="224dp"
-        android:text="Shop shop shop"
-        android:textSize="34sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/carrotButton"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:text="Carrot" />
+
+            <Button
+                android:id="@+id/cucumberButton"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:text="Cucumber" />
+
+            <Button
+                android:id="@+id/watermelonButton"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:text="Watermelon" />
+
+            <Button
+                android:id="@+id/paprikaButton"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:text="Paprika" />
+
+            <Button
+                android:id="@+id/appleButton"
+                android:layout_width="match_parent"
+                android:layout_height="140dp"
+                android:text="Apple" />
+
+        </LinearLayout>
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

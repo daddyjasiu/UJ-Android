@@ -11,9 +11,10 @@ class LoginScreen : AppCompatActivity() {
     }
 
     fun onRegisterClicked(view: android.view.View) {
-        print("asdasdasd");
         startActivity(Intent(this, RegisterScreen::class.java))
     }
 
-    fun onLoginClicked(view: android.view.View) {}
+    fun onLoginClicked(view: android.view.View) {
+        startActivity(Intent(this, ShoppingScreen::class.java))
+    }
 }

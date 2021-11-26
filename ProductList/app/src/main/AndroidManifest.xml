@@ -20,6 +20,8 @@
         </activity>
         <activity android:name=".RegisterScreen"
                   android:exported="false" />
+        <activity android:name=".ShoppingScreen"
+            android:exported="false" />
     </application>
 
 </manifest>
