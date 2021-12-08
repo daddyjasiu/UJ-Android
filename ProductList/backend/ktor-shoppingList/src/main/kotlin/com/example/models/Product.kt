@@ -8,11 +8,11 @@ val productsStorage = mutableListOf<Product>()
 
 @Serializable
 data class Product(
-    val id: Int,
-    val categoryId: Int,
-    val name: String,
-    val quantity: Int,
-    val price: Double
+    val id: Int = 0,
+    val categoryId: Int = 0,
+    val name: String = "",
+    val quantity: Int = 0,
+    val price: Double = 0.0
 )
 
 fun ResultRow.toProduct() = Product(

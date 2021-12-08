@@ -6,8 +6,8 @@ import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
 data class Category(
-    val id: Int,
-    val name: String
+    val id: Int = 0,
+    val name: String = ""
 )
 
 fun ResultRow.toCategory() = Category(

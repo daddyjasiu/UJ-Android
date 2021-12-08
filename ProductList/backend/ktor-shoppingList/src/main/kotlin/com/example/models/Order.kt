@@ -6,9 +6,9 @@ import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
 data class Order(
-    val id: Int,
-    val shoppingCartId: Int,
-    val totalPrice: Double
+    val id: Int = 0,
+    val shoppingCartId: Int = 0,
+    val totalPrice: Double = 0.0
     )
 
 fun ResultRow.toOrder() = Order(

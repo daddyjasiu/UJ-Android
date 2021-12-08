@@ -2,10 +2,8 @@ package com.example
 
 import io.ktor.application.*
 import com.example.plugins.*
-import com.example.routes.registerCustomerRoutes
-import com.example.routes.registerOrderRoutes
-import com.example.routes.registerProductRoutes
-import com.example.tables.CustomerTable
+import com.example.routes.customerCRUD
+import com.example.tables.*
 import io.ktor.features.*
 import io.ktor.serialization.*
 import org.jetbrains.exposed.sql.Database
@@ -24,11 +22,13 @@ fun Application.module() {
 
     transaction{
         SchemaUtils.create(CustomerTable)
+        SchemaUtils.create(CategoryTable)
+        SchemaUtils.create(ProductTable)
+        SchemaUtils.create(ShoppingCartTable)
+        SchemaUtils.create(OrderTable)
     }
 
-    registerCustomerRoutes()
-    registerOrderRoutes()
-    registerProductRoutes()
+    customerCRUD()
     //----------------------------------
     configureRouting()
     configureMonitoring()

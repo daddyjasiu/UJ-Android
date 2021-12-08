@@ -6,10 +6,10 @@ import org.jetbrains.exposed.sql.ResultRow
 
 @Serializable
 data class ShoppingCart(
-    val id: Int,
-    val productId: Int,
-    val amount: Int,
-    val totalPrice: Double
+    val id: Int = 0,
+    val productId: Int = 0,
+    val amount: Int = 0,
+    val totalPrice: Double = 0.0
 )
 
 fun ResultRow.toShoppingCart() = ShoppingCart(
