@@ -83,6 +83,7 @@ private fun Application.deleteCategory() {
 private fun addCategoryToDatabase(category: Category) {
     transaction {
         CategoryTable.insert {
+            it[id] = category.id
             it[name] = category.name
         }
     }
