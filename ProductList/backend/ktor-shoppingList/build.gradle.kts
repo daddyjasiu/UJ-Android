@@ -19,6 +19,7 @@ application {
 repositories {
     mavenCentral()
 }
+val exposedVersion: String by project
 
 dependencies {
     implementation("io.ktor:ktor-server-core:$ktor_version")
@@ -28,11 +29,8 @@ dependencies {
     implementation("ch.qos.logback:logback-classic:$logback_version")
     testImplementation("io.ktor:ktor-server-tests:$ktor_version")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit:$kotlin_version")
-}
-val exposedVersion: String by project
-dependencies {
     implementation("org.jetbrains.exposed:exposed-core:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-dao:$exposedVersion")
     implementation("org.jetbrains.exposed:exposed-jdbc:$exposedVersion")
-    compile("org.xerial:sqlite-jdbc:3.30.1")
+    compile("org.xerial:sqlite-jdbc:3.36.2")
 }

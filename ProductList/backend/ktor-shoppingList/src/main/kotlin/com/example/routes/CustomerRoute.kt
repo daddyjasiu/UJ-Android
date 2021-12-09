@@ -1,95 +1,51 @@
 package com.example.routes
 
-import com.example.models.Customer
-import com.example.models.toCustomer
-import com.example.tables.CustomerTable
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
-import org.jetbrains.exposed.sql.*
-import org.jetbrains.exposed.sql.transactions.transaction
+import com.example.models.*
 
-fun Application.customerCRUD() {
-    getCustomer()
-    postCustomer()
-    putCustomer()
-    deleteCustomer()
-}
+fun Route.customerRouting() {
 
-private fun Application.getCustomer() {
-    routing {
-        get("/customer") {
-            var customers = mutableListOf<Customer>()
-            transaction {
-                customers = CustomerTable.selectAll().map { it.toCustomer() }.toMutableList()
-            }
-            call.respond(customers)
+    route("/customer") {
+
+        // get all customers
+        get {
+            call.respond(getAllCustomers())
         }
 
-        get("/customer/{id}") {
-            val id: Int = call.parameters["id"]!!.toInt()
-            var customer = Customer()
-            transaction {
-                customer = CustomerTable.select { CustomerTable.id eq id }.map { it.toCustomer() }.first()
-            }
-            call.respond(customer)
-        }
-    }
-}
-
-private fun Application.postCustomer() {
-    routing {
-        post("/customer") {
-            val customer = call.receive<Customer>()
-            addCustomerToDatabase(customer)
-            call.respondText("Customer stored correctly", status = HttpStatusCode.Created)
-        }
-    }
-}
-
-private fun Application.putCustomer() {
-    routing {
-        put("/customer/{id}") {
+        // gets customer by given id
+        get("/{id}") {
             val id = call.parameters["id"]
+            if(id != null) {
+                val customer = getCustomerById(id.toInt())
+                call.respond(customer)
+            }
+        }
+
+        // update customer
+        put {
             val customer = call.receive<Customer>()
-            transaction {
-                CustomerTable.update({ CustomerTable.id eq id!!.toInt() }) {
-                    it[firstName] = customer.firstName
-                    it[lastName] = customer.lastName
-                    it[email] = customer.email
-                }
-            }
-        }
-    }
-}
-
-private fun Application.deleteCustomer() {
-    routing {
-        delete("/customer") {
-            transaction {
-                SchemaUtils.drop(CustomerTable)
-            }
+            call.respond(updateCustomer(customer))
         }
 
-        delete("/customer/{id}") {
+        // adds customer
+        post {
+            val customer = call.receive<Customer>()
+            call.respond(addCustomer(customer))
+        }
+
+        // deletes all customers
+        delete {
+            call.respond(deleteAllCustomers())
+        }
+
+        // deletes customer by given id
+        delete("/{id}") {
             val id = call.parameters["id"]
-            transaction {
-                CustomerTable.deleteWhere { CustomerTable.id eq id!!.toInt() }
-            }
+            if(id != null)
+                call.respond(deleteCustomerById(id.toInt()))
         }
     }
 }
-
-private fun addCustomerToDatabase(customer: Customer) {
-    transaction {
-        CustomerTable.insert {
-            it[id] = customer.id
-            it[firstName] = customer.firstName
-            it[lastName] = customer.lastName
-            it[email] = customer.email
-        }
-    }
-}
-
