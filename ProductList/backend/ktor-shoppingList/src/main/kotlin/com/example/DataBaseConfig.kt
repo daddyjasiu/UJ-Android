@@ -31,6 +31,7 @@ fun createDB() {
         SchemaUtils.create(OrderDetailsTable)
 
         createSampleDB()
+
     }
 }
 
@@ -58,6 +59,10 @@ fun createSampleDB() {
     addToCart(2, 2)
     addToCart(2, 3)
     addToCart(2, 4)
+    addToCart(2, 4)
+    addToCart(2, 4)
+    addToCart(2, 4)
 
     placeOrder(1)
+    placeOrder(2)
 }

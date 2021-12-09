@@ -17,17 +17,17 @@ fun ResultRow.toOrderDetails() = OrderDetails(
     quantity = this[OrderDetailsTable.quantity]
 )
 
+fun getAllOrderDetails() : List<OrderDetails> {
+    return transaction {
+        OrderDetailsTable.selectAll().map { it.toOrderDetails() }
+    }
+}
+
 fun getOrderDetailsByOrderId(orderId : Int) : List<OrderDetails> {
     return transaction {
         OrderDetailsTable.select { OrderDetailsTable.orderId eq orderId } . map {
             it.toOrderDetails()
         }
-    }
-}
-
-fun getAllOrderDetails() : List<OrderDetails> {
-    return transaction {
-        OrderDetailsTable.selectAll().map { it.toOrderDetails() }
     }
 }
 

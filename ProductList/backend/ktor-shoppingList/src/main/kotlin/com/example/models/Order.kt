@@ -50,6 +50,12 @@ fun placeOrder(customerId: Int) {
         if (customerCart.isNotEmpty()) {
             orderId = OrderTable.insert {
                 it[OrderTable.customerId] = customerId
+
+                var cartTotalPrice: Double = 0.0
+                for(cart in customerCart) {
+                    cartTotalPrice += cart.totalPrice
+                }
+                it[totalPrice] = cartTotalPrice
             } get OrderTable.id
 
             for(cart in customerCart) {

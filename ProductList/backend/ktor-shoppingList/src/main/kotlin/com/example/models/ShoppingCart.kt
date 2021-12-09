@@ -42,14 +42,14 @@ fun getShoppingCartByCustomerId(customerId : Int) : List<ShoppingCart> {
 
 fun addToCart(customerId: Int, productId: Int) {
     transaction {
-        val productPrice = getProduct(productId)[0].price
+        val productPrice = getProduct(productId)
         val count = ShoppingCartTable.select { ShoppingCartTable.customerId eq customerId and (ShoppingCartTable.productId eq productId) }.count()
         // product already in cart, increase quantity
         if(count > 0) {
             ShoppingCartTable.update({ (ShoppingCartTable.customerId eq customerId) and (ShoppingCartTable.productId eq productId) }) {
                 with(SqlExpressionBuilder) {
                     it[quantity] = quantity + 1
-                    it[totalPrice] = totalPrice + productPrice
+                    it[totalPrice] = totalPrice + productPrice[productPrice.size-1].price
                 }
             }
         } else {
@@ -57,7 +57,7 @@ fun addToCart(customerId: Int, productId: Int) {
                 it[ShoppingCartTable.customerId] = customerId
                 it[ShoppingCartTable.productId] = productId
                 it[quantity] = 1
-                it[totalPrice] = productPrice
+                it[totalPrice] = productPrice[productPrice.size-1].price
             }
         }
     }
