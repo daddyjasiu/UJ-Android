@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <Button
+        android:onClick="settingsClicked"
+        android:id="@+id/settings_button"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@drawable/settings_icon"
+        app:backgroundTint="@null"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintHeight_percent=".06"
+        app:layout_constraintWidth_percent=".1"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <fragment
+        android:id="@+id/wish_input_fragment"
+        class="pl.edu.uj.ii.skwarczek.productlist.fragments.WishInputFragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintVertical_bias="0"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/settings_button"
+        tools:layout="@layout/wish_input_fragment" />
+
+    <fragment
+        android:id="@+id/wish_description_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout="@layout/shopping_cart_fragment"
+        class="pl.edu.uj.ii.skwarczek.productlist.fragments.ShoppingCartFragment"
+        app:layout_constraintVertical_bias="0"
+        android:layout_marginTop="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/wish_input_fragment" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

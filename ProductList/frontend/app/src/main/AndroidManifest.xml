@@ -10,18 +10,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.ProductList">
         <activity
-            android:name=".LoginScreen"
+            android:name=".activities.SignInActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterScreen"
-                  android:exported="false" />
-        <activity android:name=".ShoppingScreen"
-            android:exported="false" />
+        <activity android:name=".activities.ShoppingScreenActivity"/>
+        <activity android:name=".activities.SettingsActivity"/>
     </application>
 
 </manifest>

@@ -3,8 +3,24 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/drawable/button_bg.xml" value="0.23425925925925925" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/drawable/edit_text_bg.xml" value="0.23425925925925925" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/drawable/view_bg.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/activity_login.xml" value="0.17074275362318841" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/activity_settings.xml" value="0.25" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/activity_shopping_screen.xml" value="0.4" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/activity_signin.xml" value="0.18339100346020762" />
         <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/login_screen.xml" value="0.21603260869565216" />
-        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/placeholder_layout.xml" value="0.12708333333333333" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/login_tab_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/order_input_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/placeholder_layout.xml" value="0.176" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/register_tab_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/shopping_cart_fragment.xml" value="0.2" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/signin_tab_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/signup_tab_fragment.xml" value="0.25" />
+        <entry key="..\:/Users/jansk/OneDrive/Documents/UJ/Android/UJ-Android/ProductList/frontend/app/src/main/res/layout/wish_input_fragment.xml" value="0.25" />
       </map>
     </option>
   </component>
