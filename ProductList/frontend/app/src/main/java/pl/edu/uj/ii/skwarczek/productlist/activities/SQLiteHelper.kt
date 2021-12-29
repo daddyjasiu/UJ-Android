@@ -89,4 +89,16 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         return success
     }
 
+    fun deleteProductById(id: Int): Int{
+        val db = this.writableDatabase
+
+        val contentValues = ContentValues()
+        contentValues.put(ID, id)
+
+        val success = db.delete(TABLE_PRODUCT, "id=$id", null)
+        db.close()
+
+        return success
+    }
+
 }

@@ -39,14 +39,19 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
 
         productAdapter?.setOnClickItem {
-            val alert = AlertDialog.Builder(this)
-            alert.setTitle(it.name)
-            alert.setMessage(it.description)
-            alert.setPositiveButton("Close") { dialog, which -> }
-            alert.show()
+
+            wishName.setText(it.name)
+            wishDescription.setText(it.description)
+            product = it
         }
 
-        updateButton.setOnClickListener{updateProduct()}
+        productAdapter?.setOnClickUpdateButton {
+            //popup TODO
+        }
+
+        productAdapter?.setOnClickDeleteButton {
+            deleteProduct(it.id)
+        }
 
     }
 
@@ -97,13 +102,27 @@ class ShoppingScreenActivity : AppCompatActivity() {
             if(product != null) {
                 val newProduct =
                     ProductModel(id = product!!.id, name = name, description = description)
-                val status = sqliteHelper.updateProduct(product!!)
+                val status = sqliteHelper.updateProduct(newProduct)
                 if(status > -1){
                     clearEditText()
                     getProducts()
                 }
             }
         }
+    }
+
+    private fun deleteProduct(id: Int){
+        val alert = AlertDialog.Builder(this)
+        alert.setMessage("Are you sure you want to delete this wish?")
+        alert.setCancelable(true)
+        alert.setPositiveButton("Yes") { dialog, _ ->
+            sqliteHelper.deleteProductById(id)
+            getProducts()
+        }
+        alert.setNegativeButton("No") { dialog, _ ->
+            dialog.dismiss()
+        }
+        alert.show()
     }
 
     private fun clearEditText(){
@@ -123,6 +142,5 @@ class ShoppingScreenActivity : AppCompatActivity() {
         wishDescription = findViewById(R.id.wish_description)
         wishButton = findViewById(R.id.wish_button)
         cartRecyclerView = findViewById(R.id.shopping_cart_recycler_view)
-        updateButton = findViewById(R.id.update_cart_item_button)
     }
 }
