@@ -4,14 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ListView
-        android:id="@+id/shopping_cart_list_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/shopping_cart_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_bias="0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:scrollbars="vertical"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

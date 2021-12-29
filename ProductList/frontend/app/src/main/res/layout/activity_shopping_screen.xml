@@ -37,16 +37,15 @@
         tools:layout="@layout/wish_input_fragment" />
 
     <fragment
-        android:id="@+id/wish_description_fragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        tools:layout="@layout/shopping_cart_fragment"
+        android:id="@+id/wish_cart_fragment"
         class="pl.edu.uj.ii.skwarczek.productlist.fragments.ShoppingCartFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintVertical_bias="0"
-        android:layout_marginTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/wish_input_fragment" />
+        app:layout_constraintTop_toBottomOf="@+id/wish_input_fragment"
+        tools:layout="@layout/shopping_cart_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

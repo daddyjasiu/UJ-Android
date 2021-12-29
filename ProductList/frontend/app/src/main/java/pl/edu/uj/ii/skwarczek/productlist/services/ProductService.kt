@@ -1,6 +1,6 @@
 package pl.edu.uj.ii.skwarczek.productlist.services
 
-import pl.edu.uj.ii.skwarczek.productlist.data.Product
+import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -8,7 +8,7 @@ import retrofit2.http.*
 
 interface ProductService{
     @GET("product")
-    fun getProductsCall() : Call<List<Product>>
+    fun getProductsCall() : Call<List<ProductModel>>
 
     companion object {
 
