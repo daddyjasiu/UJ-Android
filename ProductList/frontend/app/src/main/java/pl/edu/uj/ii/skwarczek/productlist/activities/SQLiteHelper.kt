@@ -69,7 +69,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
                 name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
                 description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
 
-                val product = ProductModel(id = id, name = name, description = description)
+                val product = ProductModel(id = id, name = name, description = description, price = -1.0)
                 productList.add(product)
             }while(cursor.moveToNext())
         }

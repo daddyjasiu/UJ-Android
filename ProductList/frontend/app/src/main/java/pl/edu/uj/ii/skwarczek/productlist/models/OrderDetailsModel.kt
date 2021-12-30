@@ -1,4 +1,7 @@
 package pl.edu.uj.ii.skwarczek.productlist.models
 
-class OrderDetailsModel {
-}
+data class OrderDetailsModel(
+    val orderId : Int,
+    val productId : Int,
+    val quantity : Int
+)

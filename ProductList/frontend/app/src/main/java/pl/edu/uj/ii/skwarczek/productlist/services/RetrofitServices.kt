@@ -10,53 +10,56 @@ interface RetrofitService {
 
     //Products
     @GET("product")
-    fun getProductsCall() : Call<List<ProductModel>>
+    fun getProducts() : Call<List<ProductModel>>
+
+    @GET("product/{id}")
+    fun getProduct(@Path("id") id: Int) : Call<ProductModel>
 
     @POST("product")
-    fun postProductCall(@Body product : ProductModel) : Call<ProductModel>
+    fun createProduct(@Body product: ProductModel) : Call<ProductModel>
 
-    @PUT("product")
-    fun putProductCall(@Body product : ProductModel) : Call<ProductModel>
+    @DELETE("product/{id}")
+    fun deleteProduct(@Path("id") id: Int) : Call<ProductModel>
 
     //Customer
-    @GET("customer/{id}")
-    fun getCustomerByIdCall(@Path("id") id : String) : Call<CustomerModel>
+    @GET("customer")
+    fun getCustomers() : Call<List<CustomerModel>>
 
-    @POST("customer")
-    fun postCustomerCall(@Body customer : CustomerModel) : Call<CustomerModel>
+    @GET("user/{id}")
+    fun getCustomer(@Path("id") id: Int) : Call<CustomerModel>
 
-    @PUT("customer")
-    fun putCustomerCall(@Body customer : CustomerModel) : Call<CustomerModel>
+    @POST("user")
+    fun createCustomer(@Body product: CustomerModel) : Call<CustomerModel>
 
-    @DELETE("customer/{customerId}")
-    fun deleteCustomerCall(@Path("customerId") customerId: String) : Call<CustomerModel>
+    @DELETE("user/{id}")
+    fun deleteUser(@Path("id") id: Int) : Call<CustomerModel>
 
     //Cart
     @GET("cart/{customerId}")
-    fun getCartByIdCall(@Path("customerId") customerId : String) : Call<List<ShoppingCartModel>>
+    fun getCartById(@Path("customerId") customerId : String) : Call<List<ShoppingCartModel>>
 
     @POST("cart/{customerId}/{productId}")
-    fun postCartItemCall(@Path("customerId") customerId: String, @Path("productId") productId : Int) : Call<ShoppingCartModel>
+    fun postCartItem(@Path("customerId") customerId: String, @Path("productId") productId : Int) : Call<ShoppingCartModel>
 
     @DELETE("cart/{customerId}/{productId}")
-    fun deleteCartItemCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<ShoppingCartModel>
+    fun deleteCartItem(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<ShoppingCartModel>
 
     @DELETE("cart/{customerId}")
-    fun deleteCartCall(@Path("customerId") customerId: String) : Call<List<ShoppingCartModel>>
+    fun deleteCart(@Path("customerId") customerId: String) : Call<List<ShoppingCartModel>>
 
     //Orders
     @GET("order/customer/{customerId}")
-    fun getCustomerOrdersCall(@Path("customerId") customerId: String) : Call<List<OrderModel>>
+    fun getCustomerOrders(@Path("customerId") customerId: String) : Call<List<OrderModel>>
 
     @POST("order/{customerId}")
-    fun postCustomerOrderCall(@Path("customerId") customerId: String) : Call<OrderModel>
+    fun postCustomerOrder(@Path("customerId") customerId: String) : Call<OrderModel>
 
     //Order details
     @GET("oderDetails/{orderId}")
-    fun getOrderDetailsByIdCall(@Path("orderId") orderId : Int) : Call<List<OrderDetailsModel>>
+    fun getOrderDetailsById(@Path("orderId") orderId : Int) : Call<List<OrderDetailsModel>>
 
     @GET("orderDetails/customer/{customerId}")
-    fun getCustomerOrderDetailsCall(@Path("customerId") customerId: String) : Call<List<OrderDetailsModel>>
+    fun getCustomerOrderDetails(@Path("customerId") customerId: String) : Call<List<OrderDetailsModel>>
 
 
     companion object {

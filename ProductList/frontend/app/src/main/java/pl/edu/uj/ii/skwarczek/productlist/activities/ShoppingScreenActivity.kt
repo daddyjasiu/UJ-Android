@@ -10,6 +10,14 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.*
+import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import kotlin.collections.ArrayList
 
 class ShoppingScreenActivity : AppCompatActivity() {
 
@@ -55,9 +63,38 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
     }
 
+    fun getCurrentData() {
+        val retrofit = Retrofit.Builder()
+            .baseUrl("https://7162-2a01-111f-94d-8b00-6952-ad59-e252-91ca.ngrok.io")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
+        val call = service.getProducts()
+
+        //<List<ProductModel>
+        call.enqueue(object : Callback<List<ProductModel>> {
+            override fun onResponse(call: Call<List<ProductModel>>, response: Response<List<ProductModel>>) {
+                if (response.code() == 200) {
+                    val productList = response.body()!!
+                    //val productAdapter = ProductAdapter(parent,productList)
+                    //productData!!.adapter = productAdapter
+
+                    productAdapter?.addItems(productList as ArrayList<ProductModel>)
+
+                    for(product in productList){
+                        println("$product.id $product.name $product.description")
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
+            }
+        })
+    }
+
     fun settingsClicked(view: android.view.View) {
-        val intent = Intent(this,SettingsActivity::class.java)
-        startActivity(intent)
+//        val intent = Intent(this,SettingsActivity::class.java)
+//        startActivity(intent)
+        getCurrentData()
     }
 
     private fun addProduct() {
@@ -68,7 +105,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
             Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show()
         }
         else{
-            val product = ProductModel(name = name, description = description)
+            val product = ProductModel(id = Random().nextInt(100000), name = name, description = description, price = -1.0)
             val status = sqliteHelper.insertProduct(product)
 
             if(status > -1){
@@ -101,7 +138,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         else{
             if(product != null) {
                 val newProduct =
-                    ProductModel(id = product!!.id, name = name, description = description)
+                    ProductModel(id = product!!.id, name = name, description = description, price = -1.0)
                 val status = sqliteHelper.updateProduct(newProduct)
                 if(status > -1){
                     clearEditText()

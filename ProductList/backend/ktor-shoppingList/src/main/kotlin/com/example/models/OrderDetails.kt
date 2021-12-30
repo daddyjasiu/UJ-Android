@@ -3,7 +3,11 @@ package com.example.models
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
 
-data class OrderDetails(val orderId : Int, val productId : Int, val quantity : Int)
+data class OrderDetails(
+    val orderId : Int,
+    val productId : Int,
+    val quantity : Int
+    )
 
 object OrderDetailsTable : Table() {
     val orderId = integer("orderId").references(OrderTable.id)
