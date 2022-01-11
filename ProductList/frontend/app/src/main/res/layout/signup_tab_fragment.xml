@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/email"
+        android:id="@+id/sign_up_email"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintWidth_percent=".8"
@@ -24,7 +24,8 @@
         tools:ignore="RtlSymmetry" />
 
     <EditText
-        android:id="@+id/password"
+        android:inputType="textPassword"
+        android:id="@+id/sign_up_password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:hint="Password"
@@ -38,7 +39,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/email"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_email"
         app:layout_constraintWidth_percent=".8"
         tools:ignore="RtlSymmetry" />
 
@@ -55,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/password"
+        app:layout_constraintTop_toBottomOf="@+id/sign_up_password"
         app:layout_constraintWidth_percent=".8" />
 
 

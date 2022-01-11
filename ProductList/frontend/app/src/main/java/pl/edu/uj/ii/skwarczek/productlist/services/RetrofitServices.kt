@@ -10,16 +10,16 @@ interface RetrofitService {
 
     //Products
     @GET("product")
-    fun getProducts() : Call<List<ProductModel>>
+    fun getProducts() : Call<List<ProductRealmModel>>
 
     @GET("product/{id}")
-    fun getProduct(@Path("id") id: Int) : Call<ProductModel>
+    fun getProduct(@Path("id") id: Int) : Call<ProductRealmModel>
 
     @POST("product")
-    fun createProduct(@Body product: ProductModel) : Call<ProductModel>
+    fun createProduct(@Body product: ProductRealmModel) : Call<ProductRealmModel>
 
     @DELETE("product/{id}")
-    fun deleteProduct(@Path("id") id: Int) : Call<ProductModel>
+    fun deleteProduct(@Path("id") id: Int) : Call<ProductRealmModel>
 
     //Customer
     @GET("customer")

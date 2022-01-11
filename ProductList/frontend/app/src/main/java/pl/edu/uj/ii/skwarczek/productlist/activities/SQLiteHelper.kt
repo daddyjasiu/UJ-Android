@@ -6,6 +6,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
+import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 
 class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -30,7 +31,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         onCreate(db)
     }
 
-    fun insertProduct(product: ProductModel): Long{
+    fun insertProduct(product: ProductRealmModel): Long{
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(ID, product.id)
@@ -43,8 +44,8 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         return success
     }
 
-    fun getAllProducts(): ArrayList<ProductModel>{
-        val productList: ArrayList<ProductModel> = ArrayList()
+    fun getAllProducts(): ArrayList<ProductRealmModel>{
+        val productList: ArrayList<ProductRealmModel> = ArrayList()
         val selectQuery = "SELECT * FROM $TABLE_PRODUCT"
         val db = this.readableDatabase
 
@@ -69,7 +70,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
                 name = cursor.getString(cursor.getColumnIndexOrThrow("name"))
                 description = cursor.getString(cursor.getColumnIndexOrThrow("description"))
 
-                val product = ProductModel(id = id, name = name, description = description, price = -1.0)
+                val product = ProductRealmModel(id = id, name = name, description = description, price = -1.0)
                 productList.add(product)
             }while(cursor.moveToNext())
         }
@@ -77,7 +78,7 @@ class SQLiteHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, 
         return productList
     }
 
-    fun updateProduct(product: ProductModel): Int{
+    fun updateProduct(product: ProductRealmModel): Int{
         val db = this.writableDatabase
         val contentValues = ContentValues()
         contentValues.put(ID, product.id)

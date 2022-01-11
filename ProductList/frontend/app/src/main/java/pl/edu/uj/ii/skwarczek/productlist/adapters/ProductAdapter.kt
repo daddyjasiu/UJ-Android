@@ -2,36 +2,34 @@ package pl.edu.uj.ii.skwarczek.productlist.adapters
 
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.inflate
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.flow.callbackFlow
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
+import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
 
-    private var productsList: ArrayList<ProductModel> = ArrayList()
-    private var onClickItem: ((ProductModel) -> Unit)? = null
-    private var onClickUpdateButton: ((ProductModel) -> Unit)? = null
-    private var onClickDeleteButton: ((ProductModel) -> Unit)? = null
+    private var productsList: List<ProductRealmModel> = emptyList()
+    private var onClickItem: ((ProductRealmModel) -> Unit)? = null
+    private var onClickOrderButton: ((ProductRealmModel) -> Unit)? = null
+    private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
 
-    fun addItems(items: ArrayList<ProductModel>){
+    fun addItems(items: List<ProductRealmModel>){
         this.productsList = items
         notifyDataSetChanged()
     }
 
-    fun setOnClickItem(callback: (ProductModel) -> Unit){
+    fun setOnClickItem(callback: (ProductRealmModel) -> Unit){
         this.onClickItem = callback
     }
 
-    fun setOnClickUpdateButton(callback: (ProductModel) -> Unit){
-        this.onClickUpdateButton = callback
+    fun setOnClickOrderButton(callback: (ProductRealmModel) -> Unit){
+        this.onClickOrderButton = callback
     }
 
-    fun setOnClickDeleteButton(callback: (ProductModel) -> Unit){
+    fun setOnClickDeleteButton(callback: (ProductRealmModel) -> Unit){
         this.onClickDeleteButton = callback
     }
 
@@ -43,7 +41,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         val product = productsList[position]
         holder.bindView(product)
         holder.itemView.setOnClickListener{onClickItem?.invoke(product)}
-        holder.updateButton.setOnClickListener{onClickUpdateButton?.invoke(product)}
+        holder.orderButton.setOnClickListener{onClickOrderButton?.invoke(product)}
         holder.deleteButton.setOnClickListener{onClickDeleteButton?.invoke(product)}
     }
 
@@ -56,10 +54,10 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         private var id = view.findViewById<TextView>(R.id.product_id)
         private var name = view.findViewById<TextView>(R.id.product_name)
         private var description = view.findViewById<TextView>(R.id.product_description)
-        var updateButton = view.findViewById<Button>(R.id.update_cart_item_button)
+        var orderButton = view.findViewById<Button>(R.id.order_cart_item_button)
         var deleteButton = view.findViewById<Button>(R.id.delete_cart_item_button)
 
-        fun bindView(product: ProductModel){
+        fun bindView(product: ProductRealmModel){
             id.text = product.id.toString()
             name.text = product.name
             description.text = product.description

@@ -10,9 +10,10 @@ import pl.edu.uj.ii.skwarczek.productlist.R
 
 class SignUpTabFragment : Fragment(){
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.signup_tab_fragment, container, false)
-        return root
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.signup_tab_fragment, container, false)
     }
 }
