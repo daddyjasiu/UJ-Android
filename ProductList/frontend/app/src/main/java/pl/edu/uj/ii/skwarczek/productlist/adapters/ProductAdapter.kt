@@ -13,7 +13,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
 
     private var productsList: List<ProductRealmModel> = emptyList()
     private var onClickItem: ((ProductRealmModel) -> Unit)? = null
-    private var onClickOrderButton: ((ProductRealmModel) -> Unit)? = null
+    private var onClickAddToCartButton: ((ProductRealmModel) -> Unit)? = null
     private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
 
     fun addItems(items: List<ProductRealmModel>){
@@ -25,8 +25,8 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         this.onClickItem = callback
     }
 
-    fun setOnClickOrderButton(callback: (ProductRealmModel) -> Unit){
-        this.onClickOrderButton = callback
+    fun setOnClickAddToCartButton(callback: (ProductRealmModel) -> Unit){
+        this.onClickAddToCartButton = callback
     }
 
     fun setOnClickDeleteButton(callback: (ProductRealmModel) -> Unit){
@@ -41,7 +41,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         val product = productsList[position]
         holder.bindView(product)
         holder.itemView.setOnClickListener{onClickItem?.invoke(product)}
-        holder.orderButton.setOnClickListener{onClickOrderButton?.invoke(product)}
+        holder.addToCartButton.setOnClickListener{onClickAddToCartButton?.invoke(product)}
         holder.deleteButton.setOnClickListener{onClickDeleteButton?.invoke(product)}
     }
 
@@ -54,7 +54,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         private var id = view.findViewById<TextView>(R.id.product_id)
         private var name = view.findViewById<TextView>(R.id.product_name)
         private var description = view.findViewById<TextView>(R.id.product_description)
-        var orderButton = view.findViewById<Button>(R.id.order_cart_item_button)
+        var addToCartButton = view.findViewById<Button>(R.id.add_to_cart_cart_item_button)
         var deleteButton = view.findViewById<Button>(R.id.delete_cart_item_button)
 
         fun bindView(product: ProductRealmModel){

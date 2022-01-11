@@ -10,6 +10,7 @@ data class Customer (
     val firstName: String = "",
     val lastName: String = "",
     val email: String = "",
+    val password: String = "",
     )
 
 object CustomerTable : Table() {
@@ -18,13 +19,15 @@ object CustomerTable : Table() {
     val firstName = varchar("firstName", 50)
     val lastName = varchar("lastName", 50)
     val email = varchar("email", 50)
+    val password = varchar("password", 50)
 }
 
 fun ResultRow.toCustomer() = Customer(
     id = this[CustomerTable.id],
     firstName = this[CustomerTable.firstName],
     lastName = this[CustomerTable.lastName],
-    email = this[CustomerTable.email]
+    email = this[CustomerTable.email],
+    password = this[CustomerTable.password]
 )
 
 fun getAllCustomers() : List<Customer> {
@@ -46,6 +49,7 @@ fun addCustomer(customer : Customer) {
             it[firstName] = customer.firstName
             it[lastName] = customer.lastName
             it[email] = customer.email
+            it[password] = customer.password
         }
     }
 }
@@ -57,6 +61,7 @@ fun updateCustomer(customer : Customer) {
             it[firstName] = customer.firstName
             it[lastName] = customer.lastName
             it[email] = customer.email
+            it[password] = customer.password
         }
     }
 }

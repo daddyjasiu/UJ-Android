@@ -47,14 +47,17 @@ object RealmHelper {
 
     }
 
-    fun addCustomerToDB(email: String, password: String){
-        val customer = CustomerRealmModel()
+    fun addCustomerToDB(customer: CustomerRealmModel){
         realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
             val random = Random.nextInt(0, Int.MAX_VALUE)
-            customer.id = random
-            customer.email = email
-            customer.password = password
-            bgRealm.insert(customer)
+            bgRealm.insert(
+                CustomerRealmModel(
+                random,
+                customer.firstName,
+                customer.lastName,
+                customer.email,
+                customer.password
+            ))
 
         }, Realm.Transaction.OnSuccess {
             println("Customer added to local Realm database with credentials:")

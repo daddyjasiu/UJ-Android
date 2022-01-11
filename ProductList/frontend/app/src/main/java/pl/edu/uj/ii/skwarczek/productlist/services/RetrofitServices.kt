@@ -5,6 +5,9 @@ import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.*
+import com.google.gson.GsonBuilder
+
+import com.google.gson.Gson
 
 interface RetrofitService {
 
@@ -23,16 +26,16 @@ interface RetrofitService {
 
     //Customer
     @GET("customer")
-    fun getCustomers() : Call<List<CustomerModel>>
+    fun getCustomers() : Call<List<CustomerRealmModel>>
 
     @GET("user/{id}")
-    fun getCustomer(@Path("id") id: Int) : Call<CustomerModel>
+    fun getCustomer(@Path("id") id: Int) : Call<CustomerRealmModel>
 
     @POST("user")
-    fun createCustomer(@Body product: CustomerModel) : Call<CustomerModel>
+    fun createCustomer(@Body product: String) : Call<CustomerRealmModel>
 
     @DELETE("user/{id}")
-    fun deleteUser(@Path("id") id: Int) : Call<CustomerModel>
+    fun deleteUser(@Path("id") id: Int) : Call<CustomerRealmModel>
 
     //Cart
     @GET("cart/{customerId}")
@@ -64,12 +67,16 @@ interface RetrofitService {
 
     companion object {
 
-        var BASE_URL = "http://localhost:8080/"
+        var BASE_URL = "https://e0d2-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 
+            val gson = GsonBuilder()
+                .setLenient()
+                .create()
+
             val retrofit = Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .baseUrl(BASE_URL)
                 .build()
 

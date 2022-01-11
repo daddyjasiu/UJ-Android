@@ -6,19 +6,16 @@ import org.jetbrains.exposed.sql.transactions.transaction
 data class OrderDetails(
     val orderId : Int,
     val productId : Int,
-    val quantity : Int
     )
 
 object OrderDetailsTable : Table() {
     val orderId = integer("orderId").references(OrderTable.id)
     val productId = integer("productId").references(ProductTable.id)
-    val quantity = integer("quantity")
 }
 
 fun ResultRow.toOrderDetails() = OrderDetails(
     orderId = this[OrderDetailsTable.orderId],
     productId = this[OrderDetailsTable.productId],
-    quantity = this[OrderDetailsTable.quantity]
 )
 
 fun getAllOrderDetails() : List<OrderDetails> {
@@ -35,12 +32,11 @@ fun getOrderDetailsByOrderId(orderId : Int) : List<OrderDetails> {
     }
 }
 
-fun insertOrderDetailsRow(orderId: Int, productId: Int, quantity: Int) {
+fun insertOrderDetailsRow(orderId: Int, productId: Int) {
     transaction {
         OrderDetailsTable.insert {
             it[OrderDetailsTable.orderId] = orderId
             it[OrderDetailsTable.productId] = productId
-            it[OrderDetailsTable.quantity] = quantity
         }
     }
 }

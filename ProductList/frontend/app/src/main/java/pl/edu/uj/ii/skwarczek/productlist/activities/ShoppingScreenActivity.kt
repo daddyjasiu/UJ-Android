@@ -37,11 +37,11 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
         sqliteHelper = SQLiteHelper(this)
 
-        getProducts()
+        getCartItemsFromCache()
 
         wishButton.setOnClickListener{
-            addProduct()
-            getProducts()
+            addCartItemToCache()
+            getCartItemsFromCache()
         }
 
         productAdapter?.setOnClickItem {
@@ -50,19 +50,18 @@ class ShoppingScreenActivity : AppCompatActivity() {
             product = it
         }
 
-        productAdapter?.setOnClickOrderButton {
+        productAdapter?.setOnClickAddToCartButton {
             //popup TODO
         }
 
         productAdapter?.setOnClickDeleteButton {
-            deleteProduct(it.id)
+            deleteCartItem(it.id)
         }
-
     }
 
-    fun getCurrentData() {
+    private fun getCartItemsFromBackend() {
         val retrofit = Retrofit.Builder()
-            .baseUrl("https://7162-2a01-111f-94d-8b00-6952-ad59-e252-91ca.ngrok.io")
+            .baseUrl(RetrofitService.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         val service: RetrofitService = retrofit.create(RetrofitService::class.java)
@@ -70,9 +69,10 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
         call.enqueue(object : Callback<List<ProductRealmModel>> {
             override fun onResponse(call: Call<List<ProductRealmModel>>, response: Response<List<ProductRealmModel>>) {
-                if (response.code() == 200) {
-                    val productList = response.body()!!
 
+                if (response.code() == 200) {
+
+                    val productList = response.body()!!
                     productAdapter?.addItems(productList)
 
                     for(product in productList){
@@ -85,15 +85,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         })
     }
 
-    fun settingsClicked(view: android.view.View) {
-//        val intent = Intent(this,SettingsActivity::class.java)
-//        startActivity(intent)
-//        getCurrentData()
-        RealmHelper.clearDB()
-        getProducts()
-    }
-
-    private fun addProduct() {
+    private fun addCartItemToCache() {
         val name = wishName.text.toString()
         val description = wishDescription.text.toString()
 
@@ -108,27 +100,36 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
     }
 
-    private fun getProducts(){
+    private fun getCartItemsFromCache(){
         val productList = RealmHelper.getAllProducts()
         productAdapter?.addItems(productList)
+        println("PRINTING CURRENT CART ITEMS:")
         for(product in productList){
-            println("PRINTING CURRENT PRODUCTS:")
             println("$product.id, $product.name, $product.description")
         }
     }
 
-    private fun deleteProduct(id: Int){
+    private fun deleteCartItem(id: Int){
         val alert = AlertDialog.Builder(this)
         alert.setMessage("Are you sure you want to delete this wish?")
         alert.setCancelable(true)
         alert.setPositiveButton("Yes") { dialog, _ ->
             RealmHelper.deleteProductById(id)
-            getProducts()
+            getCartItemsFromCache()
         }
         alert.setNegativeButton("No") { dialog, _ ->
             dialog.dismiss()
         }
         alert.show()
+    }
+
+    fun settingsClicked(view: android.view.View) {
+//        val intent = Intent(this,SettingsActivity::class.java)
+//        startActivity(intent)
+//        getCurrentData()
+//        RealmHelper.clearDB()
+        getCartItemsFromBackend()
+        getCartItemsFromCache()
     }
 
     private fun clearEditText(){

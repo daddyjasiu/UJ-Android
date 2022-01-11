@@ -8,7 +8,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 data class Order(
     val id: Int = 0,
     val customerId: Int = 0,
-    val totalPrice: Double = 0.0,
+    val totalPrice: Double = -1.0,
     )
 
 object OrderTable : Table() {
@@ -16,7 +16,7 @@ object OrderTable : Table() {
     override val primaryKey = PrimaryKey(id)
 
     val customerId = integer("customerId").references(CustomerTable.id)
-    val totalPrice = double("totalPrice").references(ShoppingCartTable.totalPrice)
+    val totalPrice = double("totalPrice")
 }
 
 fun ResultRow.toOrder() = Order(
@@ -43,23 +43,18 @@ fun getOrderById(id : Int) : List<Order> {
     }
 }
 
-fun placeOrder(customerId: Int) {
+fun placeOrder(customerId: Int, totalPrice: Double) {
     transaction {
         val customerCart = getShoppingCartByCustomerId(customerId)
         val orderId : Int
         if (customerCart.isNotEmpty()) {
             orderId = OrderTable.insert {
                 it[OrderTable.customerId] = customerId
-
-                var cartTotalPrice: Double = 0.0
-                for(cart in customerCart) {
-                    cartTotalPrice += cart.totalPrice
-                }
-                it[totalPrice] = cartTotalPrice
+                it[OrderTable.totalPrice] = totalPrice
             } get OrderTable.id
 
             for(cart in customerCart) {
-                insertOrderDetailsRow(orderId, cart.productId, cart.quantity)
+                insertOrderDetailsRow(orderId, cart.productId)
             }
 
             // after placing an order delete all products from cart
@@ -67,6 +62,15 @@ fun placeOrder(customerId: Int) {
 
         } else {
             // TODO empty cart
+        }
+    }
+}
+
+fun updateOrder(order: Order){
+    transaction {
+        OrderTable.update({ ProductTable.id eq order.id }) {
+            it[customerId] = order.customerId
+            it[totalPrice] = order.totalPrice
         }
     }
 }
