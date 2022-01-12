@@ -41,8 +41,6 @@ class SignInActivity : AppCompatActivity() {
 
     fun signInClicked(view: android.view.View) {
         signInCurrentUser()
-        val intent = Intent(this, ShoppingScreenActivity::class.java)
-        //startActivity(intent)
     }
 
     fun signUpClicked(view: android.view.View) {
@@ -93,26 +91,6 @@ class SignInActivity : AppCompatActivity() {
         })
     }
 
-
-    private fun initView() {
-
-        tabLayout = findViewById(R.id.tab_layout)
-        viewPager = findViewById(R.id.view_pager)
-
-        val tabTitles = arrayOf("Sign in", "Sign up")
-
-        tabLayout.addTab(tabLayout.newTab())
-        tabLayout.addTab(tabLayout.newTab())
-        tabLayout.tabGravity = TabLayout.GRAVITY_FILL
-
-        viewPager.adapter =
-            SignInAdapter(supportFragmentManager, lifecycle, this, tabLayout.tabCount)
-
-        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
-            tab.text = tabTitles[position]
-        }.attach()
-    }
-
     private fun signUpCurrentUser() {
 
         signUpEmailField = findViewById(R.id.sign_up_email)
@@ -133,7 +111,7 @@ class SignInActivity : AppCompatActivity() {
                 passwordText
             )
 
-            addCustomerToBackend(customer)
+            //addCustomerToBackend(customer)
             RealmHelper.addCustomerToDB(customer)
 
             RealmHelper.syncRealmWithSQLite()
@@ -164,4 +142,24 @@ class SignInActivity : AppCompatActivity() {
             Toast.makeText(this, "Customer doesn't exist", Toast.LENGTH_SHORT).show()
         }
     }
+
+    private fun initView() {
+
+        tabLayout = findViewById(R.id.tab_layout)
+        viewPager = findViewById(R.id.view_pager)
+
+        val tabTitles = arrayOf("Sign in", "Sign up")
+
+        tabLayout.addTab(tabLayout.newTab())
+        tabLayout.addTab(tabLayout.newTab())
+        tabLayout.tabGravity = TabLayout.GRAVITY_FILL
+
+        viewPager.adapter =
+            SignInAdapter(supportFragmentManager, lifecycle, this, tabLayout.tabCount)
+
+        TabLayoutMediator(tabLayout, viewPager) { tab, position ->
+            tab.text = tabTitles[position]
+        }.attach()
+    }
+
 }

@@ -24,7 +24,6 @@ class ShoppingScreenActivity : AppCompatActivity() {
     private lateinit var wishButton: Button
     private lateinit var sqliteHelper: SQLiteHelper
     private lateinit var cartRecyclerView: RecyclerView
-    private lateinit var updateButton: Button
     private var productAdapter: ProductAdapter? = null
     private var product: ProductRealmModel? = null
 
