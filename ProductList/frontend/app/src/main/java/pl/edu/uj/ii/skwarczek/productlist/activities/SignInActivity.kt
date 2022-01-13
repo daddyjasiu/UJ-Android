@@ -9,7 +9,6 @@ import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
-import com.google.gson.Gson
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.SignInAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.CustomerRealmModel
@@ -17,10 +16,9 @@ import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.jvm.javaClass
 import org.json.JSONObject
-
-
+import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
+import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
 
 class SignInActivity : AppCompatActivity() {
@@ -31,7 +29,7 @@ class SignInActivity : AppCompatActivity() {
     private lateinit var signUpPasswordField: EditText
     private lateinit var signInEmailField: EditText
     private lateinit var signInPasswordField: EditText
-    private val gson = Gson()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signin)
@@ -112,9 +110,11 @@ class SignInActivity : AppCompatActivity() {
             )
 
             //addCustomerToBackend(customer)
-            RealmHelper.addCustomerToDB(customer)
+            RealmHelper.addCustomer(customer)
 
             RealmHelper.syncRealmWithSQLite()
+
+            Globals.setCurrentUser(customer)
             tabLayout.selectTab(tabLayout.getTabAt(0))
 
             signUpEmailField.setText("")
@@ -136,8 +136,25 @@ class SignInActivity : AppCompatActivity() {
         if (customer != null) {
             Toast.makeText(this, "Customer exists with ID: ${customer.id}", Toast.LENGTH_SHORT)
                 .show()
+
+            val currentUser = CustomerRealmModel()
+            currentUser.id = customer.id
+            currentUser.firstName = customer.firstName
+            currentUser.lastName = customer.lastName
+            currentUser.email = customer.email
+            currentUser.password = customer.password
+            Globals.setCurrentUser(currentUser)
+
             val intent = Intent(this, ShoppingScreenActivity::class.java)
+
+//            intent.putExtra("currentUserId", currentUser.id)
+//            intent.putExtra("currentUserFirstName", currentUser.firstName)
+//            intent.putExtra("currentUserLastName", currentUser.lastName)
+//            intent.putExtra("currentUserEmail", currentUser.email)
+//            intent.putExtra("currentUserPassword", currentUser.password)
+
             startActivity(intent)
+
         } else {
             Toast.makeText(this, "Customer doesn't exist", Toast.LENGTH_SHORT).show()
         }

@@ -1,4 +1,4 @@
-package pl.edu.uj.ii.skwarczek.productlist.activities
+package pl.edu.uj.ii.skwarczek.productlist.utility
 
 import io.realm.Realm
 import pl.edu.uj.ii.skwarczek.productlist.models.CustomerRealmModel
@@ -6,9 +6,7 @@ import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 import kotlin.random.Random
 
 import io.realm.RealmResults
-
-
-
+import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
 
 object RealmHelper {
 
@@ -20,22 +18,51 @@ object RealmHelper {
         realm.commitTransaction()
     }
 
-    fun addProductToDB(product: ProductRealmModel){
+    fun addProductToCart(currentUser: CustomerRealmModel, product: ProductRealmModel){
+
+        val cart = ShoppingCartRealmModel(currentUser.id, product.id, )
         realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
-            bgRealm.insert(product)
+            bgRealm.insert(cart)
 
         }, Realm.Transaction.OnSuccess {
-            println("Product added to local Realm database with credentials:")
-            println("ID: ${product.id}, NAME: ${product.name}, DESCRIPTION: ${product.description}")
+            println("Cart added to local Realm database with credentials:")
+            println("PRODUCT_ID: ${cart.productId}, CUSTOMER_ID: ${cart.customerId}")
         })
     }
 
-    fun getAllProducts(): List<ProductRealmModel>{
-        val products = Realm.getDefaultInstance()
+    fun getAllShoppingCarts(): List<ShoppingCartRealmModel>{
+
+        return Realm.getDefaultInstance()
+            .where(ShoppingCartRealmModel::class.java)
+            .findAll()
+    }
+
+    fun deleteAllShoppingCartsByUserId(id: Int){
+        realm.executeTransaction{
+            val rows: RealmResults<ShoppingCartRealmModel> =
+                realm.where(ShoppingCartRealmModel::class.java).equalTo("customerId", id).findAll()
+            rows.deleteAllFromRealm()
+        }
+    }
+
+    fun addProduct(product: ProductRealmModel){
+        realm.executeTransaction(Realm.Transaction { bgRealm ->
+            bgRealm.insert(product)
+        })
+    }
+
+    fun getProductById(id: Int): ProductRealmModel?{
+        return Realm.getDefaultInstance()
+            .where(ProductRealmModel::class.java)
+            .equalTo("id", id)
+            .findFirst()
+    }
+
+    fun getAllProducts(): MutableList<ProductRealmModel> {
+
+        return Realm.getDefaultInstance()
             .where(ProductRealmModel::class.java)
             .findAll()
-
-        return products
     }
 
     fun deleteProductById(id: Int){
@@ -47,7 +74,7 @@ object RealmHelper {
 
     }
 
-    fun addCustomerToDB(customer: CustomerRealmModel){
+    fun addCustomer(customer: CustomerRealmModel){
         realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
             val random = Random.nextInt(0, Int.MAX_VALUE)
             bgRealm.insert(

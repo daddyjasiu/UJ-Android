@@ -1,4 +1,4 @@
-package pl.edu.uj.ii.skwarczek.productlist
+package pl.edu.uj.ii.skwarczek.productlist.utility
 
 import android.app.Application
 import io.realm.Realm

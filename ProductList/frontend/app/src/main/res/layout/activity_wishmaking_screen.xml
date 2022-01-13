@@ -37,8 +37,8 @@
         tools:layout="@layout/wish_input_fragment" />
 
     <fragment
-        android:id="@+id/wish_cart_fragment"
-        class="pl.edu.uj.ii.skwarczek.productlist.fragments.ShoppingCartFragment"
+        android:id="@+id/wish_list_fragment"
+        class="pl.edu.uj.ii.skwarczek.productlist.fragments.ProductListFragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintVertical_bias="0"
@@ -46,6 +46,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wish_input_fragment"
-        tools:layout="@layout/shopping_cart_fragment" />
+        tools:layout="@layout/product_list_fragment" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

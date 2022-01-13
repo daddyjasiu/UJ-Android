@@ -11,14 +11,21 @@ import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
 
-    private var productsList: List<ProductRealmModel> = emptyList()
+    private var productsList: ArrayList<ProductRealmModel> = arrayListOf()
     private var onClickItem: ((ProductRealmModel) -> Unit)? = null
     private var onClickAddToCartButton: ((ProductRealmModel) -> Unit)? = null
     private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
 
-    fun addItems(items: List<ProductRealmModel>){
+    fun addItems(items: ArrayList<ProductRealmModel>){
         this.productsList = items
         notifyDataSetChanged()
+    }
+
+    fun deleteItemFromView(item: ProductRealmModel){
+        if(this.productsList.contains(item)){
+            this.productsList.remove(item)
+            notifyDataSetChanged()
+        }
     }
 
     fun setOnClickItem(callback: (ProductRealmModel) -> Unit){
@@ -34,7 +41,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ProductViewHolder (
-        LayoutInflater.from(parent.context).inflate(R.layout.cart_item_fragment, parent, false)
+        LayoutInflater.from(parent.context).inflate(R.layout.product_list_item_fragment, parent, false)
     )
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
@@ -51,17 +58,16 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
 
     class ProductViewHolder(var view: View) : RecyclerView.ViewHolder(view){
 
-        private var id = view.findViewById<TextView>(R.id.product_id)
-        private var name = view.findViewById<TextView>(R.id.product_name)
-        private var description = view.findViewById<TextView>(R.id.product_description)
-        var addToCartButton = view.findViewById<Button>(R.id.add_to_cart_cart_item_button)
-        var deleteButton = view.findViewById<Button>(R.id.delete_cart_item_button)
+        private var id = view.findViewById<TextView>(R.id.product_list_item_product_id)
+        private var name = view.findViewById<TextView>(R.id.product_list_item_product_name)
+        private var description = view.findViewById<TextView>(R.id.product_list_item_product_description)
+        var addToCartButton: Button = view.findViewById<Button>(R.id.add_to_cart_cart_item_button)
+        var deleteButton: Button = view.findViewById<Button>(R.id.delete_cart_item_button)
 
         fun bindView(product: ProductRealmModel){
             id.text = product.id.toString()
             name.text = product.name
             description.text = product.description
         }
-
     }
 }
