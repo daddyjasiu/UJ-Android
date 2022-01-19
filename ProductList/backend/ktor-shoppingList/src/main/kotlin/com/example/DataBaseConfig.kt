@@ -36,31 +36,38 @@ fun createDB() {
 }
 
 fun createSampleDB() {
-    val customer1 = Customer(1, "Karol", "Przystalski", "kprzystalski@gmail.com")
-    val customer2 = Customer(2, "Jan", "Skwarczek", "janskw@gmail.com")
-    val customer3 = Customer(3, "Smieszko", "Mieszko", "yoloswag@gmail.com")
-    val product1 = Product(1, "p1", "product 1")
-    val product2 = Product(2, "p2", "product 2")
-    val product3 = Product(3, "p3", "product 3")
-    val product4 = Product(4, "p4", "product 4")
-
-    addProduct(product1)
-    addProduct(product2)
-    addProduct(product3)
-    addProduct(product4)
-
-    addCustomer(customer1)
-    addCustomer(customer2)
-    addCustomer(customer3)
-
-    addToCart(1, 1)
-    addToCart(1, 3)
-
-    addToCart(2, 1)
-    addToCart(2, 2)
-    addToCart(2, 3)
-    addToCart(2, 4)
-
-    placeOrder(1, 123.0)
-//   placeOrder(2)
+//    val customer1 = Customer(1, "Karol", "Przystalski", "kprzystalski@gmail.com", "pass1")
+//    val customer2 = Customer(2, "Jan", "Skwarczek", "janskw@gmail.com", "pass2")
+//    val customer3 = Customer(3, "Smieszko", "Mieszko", "yoloswag@gmail.com", "pass3")
+//    val customer4 = Customer(4, "Tescik", "Tescikowski", "prankyboi@gmail.com", "pass4")
+//
+//    val product1 = Product(1, customer1.id, "p1", "product 1")
+//    val product2 = Product(2, customer2.id, "p2", "product 2")
+//    val product3 = Product(3, customer3.id, "p3", "product 3")
+//    val product4 = Product(4, customer4.id, "p4", "product 4")
+//
+//    val shoppingCart1 = ShoppingCart(customer1.id, product1.id, product1.name, product1.description)
+//    val shoppingCart2 = ShoppingCart(customer1.id, product2.id, product2.name, product2.description)
+//    val shoppingCart3 = ShoppingCart(customer3.id, product1.id, product1.name, product1.description)
+//    val shoppingCart4 = ShoppingCart(customer3.id, product3.id, product3.name, product3.description)
+//    val shoppingCart5 = ShoppingCart(customer3.id, product4.id, product4.name, product4.description)
+//
+//    addCustomer(customer1)
+//    addCustomer(customer2)
+//    addCustomer(customer3)
+//    addCustomer(customer4)
+//
+//    addProduct(product1)
+//    addProduct(product2)
+//    addProduct(product3)
+//    addProduct(product4)
+//
+//    addShoppingCart(shoppingCart1)
+//    addShoppingCart(shoppingCart2)
+//    addShoppingCart(shoppingCart3)
+//    addShoppingCart(shoppingCart4)
+//    addShoppingCart(shoppingCart5)
+//
+////   placeOrder(1, 123.0)
+////   placeOrder(2)
 }

@@ -1,12 +1,15 @@
 package pl.edu.uj.ii.skwarczek.productlist.utility
 
 import io.realm.Realm
-import pl.edu.uj.ii.skwarczek.productlist.models.CustomerRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
-import kotlin.random.Random
 
 import io.realm.RealmResults
-import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
+import pl.edu.uj.ii.skwarczek.productlist.models.*
+import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 
 object RealmHelper {
 
@@ -18,9 +21,9 @@ object RealmHelper {
         realm.commitTransaction()
     }
 
-    fun addProductToCart(currentUser: CustomerRealmModel, product: ProductRealmModel){
+    fun addShoppingCart(shoppingCart: ShoppingCartModel){
 
-        val cart = ShoppingCartRealmModel(currentUser.id, product.id, )
+        val cart = ShoppingCartRealmModel(shoppingCart.customerId, shoppingCart.productId, shoppingCart.productName, shoppingCart.productDescription)
         realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
             bgRealm.insert(cart)
 
@@ -46,9 +49,9 @@ object RealmHelper {
     }
 
     fun addProduct(product: ProductRealmModel){
-        realm.executeTransaction(Realm.Transaction { bgRealm ->
+        realm.executeTransaction { bgRealm ->
             bgRealm.insert(product)
-        })
+        }
     }
 
     fun getProductById(id: Int): ProductRealmModel?{
@@ -75,21 +78,9 @@ object RealmHelper {
     }
 
     fun addCustomer(customer: CustomerRealmModel){
-        realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
-            val random = Random.nextInt(0, Int.MAX_VALUE)
-            bgRealm.insert(
-                CustomerRealmModel(
-                random,
-                customer.firstName,
-                customer.lastName,
-                customer.email,
-                customer.password
-            ))
-
-        }, Realm.Transaction.OnSuccess {
-            println("Customer added to local Realm database with credentials:")
-            println("ID: ${customer.id}, E-MAIL: ${customer.email}, PASSWORD: ${customer.password}")
-        })
+        realm.executeTransaction { bgRealm ->
+            bgRealm.insert(customer)
+        }
     }
 
     fun getCustomerById(id: Int): CustomerRealmModel? {
@@ -105,16 +96,9 @@ object RealmHelper {
         return Realm.getDefaultInstance()
             .where(CustomerRealmModel::class.java)
             .equalTo("email", email)
+            .and()
             .equalTo("password", password)
             .findFirst()
-    }
-
-    fun getLatestCustomer(): CustomerRealmModel? {
-
-        return Realm.getDefaultInstance()
-            .where(CustomerRealmModel::class.java)
-            .findAll()
-            .last(null)
     }
 
     fun checkIfCustomerExistsById(id: Int): Boolean{
@@ -127,7 +111,140 @@ object RealmHelper {
         return customer == null
     }
 
-    fun syncRealmWithSQLite(){
+    fun syncRealmWithSQLite(customerId: Int){
+        getProductsByCustomerIdFromSQL(customerId)
+        getShoppingCartsByCustomerIdFromSQL(customerId)
+    }
+
+    private fun getCurrentCustomerByIdFromSQL(id: Int): CustomerModel {
+
+        var customer = CustomerModel(0, "", "", "", "")
+        val retrofit = Retrofit.Builder()
+            .baseUrl(RetrofitService.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
+        val call = service.getCustomerByIdCall(id)
+
+        call.enqueue(object : Callback<CustomerModel> {
+            override fun onResponse(call: Call<CustomerModel>, response: Response<CustomerModel>) {
+
+                if (response.code() == 200) {
+
+                    val currentCustomer =  response.body()!!
+
+                    customer = CustomerModel(
+                        currentCustomer.id,
+                        currentCustomer.firstName,
+                        currentCustomer.lastName,
+                        currentCustomer.email,
+                        currentCustomer.password
+                    )
+                }
+            }
+
+            override fun onFailure(call: Call<CustomerModel>, t: Throwable) {
+                println("DB SYNC: CUSTOMER SYNC FAILED, NO CUSTOMER WITH GIVEN ID FOUND")
+            }
+        })
+
+        return customer
+    }
+
+    fun getCurrentCustomerByNameAndPasswordFromSQL(name: String, password: String) {
+
+        val service = RetrofitService.create()
+        val call = service.getCustomerByEmailAndPasswordCall(name, password)
+
+        call.enqueue(object : Callback<CustomerModel> {
+            override fun onResponse(call: Call<CustomerModel>, response: Response<CustomerModel>) {
+
+                if (response.isSuccessful && response.body() != null) {
+
+                    val currentCustomer = response.body()!!
+                    println("${currentCustomer.id}, ${currentCustomer.email}")
+                    addCustomer(CustomerRealmModel(
+                        currentCustomer.id,
+                        currentCustomer.firstName,
+                        currentCustomer.lastName,
+                        currentCustomer.email,
+                        currentCustomer.password
+                    ))
+                }
+            }
+
+            override fun onFailure(call: Call<CustomerModel>, t: Throwable) {
+                println("DB SYNC: CUSTOMER SYNC FAILED, NO CUSTOMER WITH GIVEN NAME AND PASSWORD FOUND")
+                println(t.message)
+            }
+        })
+    }
+
+    private fun getProductsByCustomerIdFromSQL(customerId: Int){
+        val retrofit = Retrofit.Builder()
+            .baseUrl(RetrofitService.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
+        val call = service.getProductsByCustomerIdCall(customerId)
+
+        call.enqueue(object : Callback<List<ProductModel>> {
+            override fun onResponse(call: Call<List<ProductModel>>, response: Response<List<ProductModel>>) {
+
+                if (response.code() == 200) {
+
+                    val productList = response.body()!!
+
+                    for(product in productList){
+                        addProduct(
+                            ProductRealmModel(
+                            product.id,
+                            product.customerId,
+                            product.name,
+                            product.description,
+                        )
+                        )
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
+                println("DB SYNC: PRODUCTS BY CUSTOMER_ID SYNC FAILED, NO PRODUCTS WITH GIVEN ID FOUND")
+            }
+        })
+    }
+
+    private fun getShoppingCartsByCustomerIdFromSQL(customerId: Int){
+        val retrofit = Retrofit.Builder()
+            .baseUrl(RetrofitService.BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
+        val call = service.getShoppingCartsByCustomerIdCall(customerId)
+
+        call.enqueue(object : Callback<List<ShoppingCartModel>> {
+            override fun onResponse(call: Call<List<ShoppingCartModel>>, response: Response<List<ShoppingCartModel>>) {
+
+                if (response.code() == 200) {
+
+                    val cartList = response.body()!!
+
+                    for(cart in cartList){
+                        addShoppingCart(cart)
+                    }
+                }
+            }
+            override fun onFailure(call: Call<List<ShoppingCartModel>>, t: Throwable) {
+                println("DB SYNC: SHOPPING_CARTS BY CUSTOMER_ID SYNC FAILED, NO CARTS WITH GIVEN ID FOUND")
+            }
+        })
+
+    }
+
+    private fun getOrdersFromSQL(){
+
+    }
+
+    private fun getOrderDetailsFromSQL(){
 
     }
 

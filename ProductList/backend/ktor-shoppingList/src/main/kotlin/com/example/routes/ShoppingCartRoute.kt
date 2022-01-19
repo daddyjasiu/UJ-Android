@@ -1,6 +1,5 @@
 package com.example.routes
 
-import com.example.models.Product
 import io.ktor.application.*
 import io.ktor.http.*
 import io.ktor.request.*
@@ -24,13 +23,15 @@ fun Route.shoppingCartRouting() {
             }
         }
 
-        // puts product in customer's cart
-        post("/{customer_id}/{product_id}") {
-            val customerId = call.parameters["customer_id"]
-            val productId = call.parameters["product_id"]
-            if(customerId != null && productId != null) {
-                call.respond(addToCart(customerId.toInt(), productId.toInt()))
-            }
+        //creates shopping cart
+        post {
+            val cart = call.receive<ShoppingCart>()
+            call.respond(addShoppingCart(cart))
+        }
+
+        put {
+            val cart = call.receive<ShoppingCart>()
+            call.respond(updateShoppingCart(cart))
         }
 
         // deteles all products from cart from all customers

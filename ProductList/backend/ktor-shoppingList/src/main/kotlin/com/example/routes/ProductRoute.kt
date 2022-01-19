@@ -13,10 +13,10 @@ fun Route.productRouting() {
         }
 
         // gets product by given id
-        get("/{id}") {
-            val id = call.parameters["id"]
-            if(id != null) {
-                val product = getProduct(id.toInt())
+        get("/{customerId}") {
+            val customerId = call.parameters["customerId"]
+            if(customerId != null) {
+                val product = getProductByCustomerId(customerId.toInt())
                 call.respond(product)
             }
         }

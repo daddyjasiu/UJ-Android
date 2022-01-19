@@ -7,23 +7,30 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pl.edu.uj.ii.skwarczek.productlist.R
+import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 
 class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
 
-    private var productsList: ArrayList<ProductRealmModel> = arrayListOf()
+    private var productsRealmList: ArrayList<ProductRealmModel> = arrayListOf()
+    private var productsModelList: List<ProductModel> = arrayListOf()
     private var onClickItem: ((ProductRealmModel) -> Unit)? = null
     private var onClickAddToCartButton: ((ProductRealmModel) -> Unit)? = null
     private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
 
     fun addItems(items: ArrayList<ProductRealmModel>){
-        this.productsList = items
+        this.productsRealmList = items
+        notifyDataSetChanged()
+    }
+
+    fun addItems(items: List<ProductModel>){
+        this.productsModelList = items
         notifyDataSetChanged()
     }
 
     fun deleteItemFromView(item: ProductRealmModel){
-        if(this.productsList.contains(item)){
-            this.productsList.remove(item)
+        if(this.productsRealmList.contains(item)){
+            this.productsRealmList.remove(item)
             notifyDataSetChanged()
         }
     }
@@ -45,7 +52,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
     )
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
-        val product = productsList[position]
+        val product = productsRealmList[position]
         holder.bindView(product)
         holder.itemView.setOnClickListener{onClickItem?.invoke(product)}
         holder.addToCartButton.setOnClickListener{onClickAddToCartButton?.invoke(product)}
@@ -53,7 +60,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
     }
 
     override fun getItemCount(): Int {
-        return productsList.size
+        return productsRealmList.size
     }
 
     class ProductViewHolder(var view: View) : RecyclerView.ViewHolder(view){

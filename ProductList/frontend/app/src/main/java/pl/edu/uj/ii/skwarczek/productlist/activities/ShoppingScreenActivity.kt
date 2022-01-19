@@ -2,7 +2,6 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.provider.Settings
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -11,14 +10,8 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
 class ShoppingScreenActivity : AppCompatActivity() {
@@ -64,33 +57,6 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
     }
 
-    private fun getProductsFromBackend() {
-        val retrofit = Retrofit.Builder()
-            .baseUrl(RetrofitService.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
-        val call = service.getProducts()
-
-        call.enqueue(object : Callback<List<ProductRealmModel>> {
-            override fun onResponse(call: Call<List<ProductRealmModel>>, response: Response<List<ProductRealmModel>>) {
-
-                if (response.code() == 200) {
-
-                    val productList = response.body()!!
-                    //productAdapter?.addItems(productList)
-                    getProductsFromCache()
-
-                    for(product in productList){
-                        println("$product.id $product.name $product.description")
-                    }
-                }
-            }
-            override fun onFailure(call: Call<List<ProductRealmModel>>, t: Throwable) {
-            }
-        })
-    }
-
     private fun addProductToCache() {
         val name = wishName.text.toString()
         val description = wishDescription.text.toString()
@@ -100,7 +66,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
         else{
             val random = Random.nextInt(0, Int.MAX_VALUE)
-            val product = ProductRealmModel(random, name, description)
+            val product = ProductRealmModel(random, Globals.getCurrentUser()!!.id, name, description)
             RealmHelper.addProduct(product)
             clearEditText()
 
@@ -108,7 +74,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
     }
 
     private fun addProductToCart(product: ProductRealmModel){
-        RealmHelper.addProductToCart(Globals.getCurrentUser(), product)
+        //RealmHelper.addProductToCart(product)
 
         //deleteProductById(product.id, false)
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()

@@ -3,6 +3,7 @@ package com.example.models
 import kotlinx.serialization.Serializable
 import org.jetbrains.exposed.sql.*
 import org.jetbrains.exposed.sql.transactions.transaction
+import javax.management.Query.and
 
 @Serializable
 data class Customer (
@@ -36,9 +37,15 @@ fun getAllCustomers() : List<Customer> {
     }
 }
 
-fun getCustomerById(id : Int) : List<Customer> {
+fun getCustomerById(id : Int) : Customer? {
     return transaction {
-        CustomerTable.select { CustomerTable.id eq id}.map { it.toCustomer() }
+        CustomerTable.select { CustomerTable.id eq id}.map { it.toCustomer() }.singleOrNull()
+    }
+}
+
+fun getCustomerByEmailAndPassword(email: String, password: String) : Customer?{
+    return transaction {
+        CustomerTable.select {(CustomerTable.email eq email) and (CustomerTable.password eq password)}.map { it.toCustomer() }.singleOrNull()
     }
 }
 

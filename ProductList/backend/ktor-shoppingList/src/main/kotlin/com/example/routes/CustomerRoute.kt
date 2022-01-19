@@ -5,6 +5,7 @@ import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import com.example.models.*
+import io.ktor.http.*
 
 fun Route.customerRouting() {
 
@@ -20,7 +21,25 @@ fun Route.customerRouting() {
             val id = call.parameters["id"]
             if(id != null) {
                 val customer = getCustomerById(id.toInt())
-                call.respond(customer)
+                if(customer != null)
+                    call.respond(customer)
+                else{
+                    call.respond(HttpStatusCode.NotFound)
+                }
+            }
+        }
+
+        get("/{email}/{password}"){
+            val email = call.parameters["email"]
+            val password = call.parameters["password"]
+
+            if(email != null && password != null) {
+                val customer = getCustomerByEmailAndPassword(email, password)
+                if(customer != null)
+                    call.respond(customer)
+                else{
+                    call.respond(HttpStatusCode.NotFound)
+                }
             }
         }
 

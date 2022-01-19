@@ -7,6 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 @Serializable
 data class Product(
     val id: Int = 0,
+    val customerId: Int = 0,
     val name: String = "",
     val description: String = "",
 )
@@ -15,12 +16,14 @@ object ProductTable : Table() {
     val id = integer("id").autoIncrement()
     override val primaryKey = PrimaryKey(id)
 
+    val customerId = integer("customerId")
     val name = varchar("name", 50)
     val description = varchar("description", 500)
 }
 
 fun ResultRow.toProduct() = Product(
     id = this[ProductTable.id],
+    customerId = this[ProductTable.customerId],
     name = this[ProductTable.name],
     description = this[ProductTable.description],
 )
@@ -31,9 +34,9 @@ fun getAllProducts() : List<Product> {
     }
 }
 
-fun getProduct(id : Int) : List<Product> {
+fun getProductByCustomerId(customerId : Int) : List<Product> {
     return transaction {
-        ProductTable.select { ProductTable.id eq id }.map { it.toProduct() }
+        ProductTable.select { ProductTable.customerId eq customerId }.map { it.toProduct() }
     }
 }
 
@@ -41,6 +44,7 @@ fun addProduct(product: Product) {
     transaction {
         ProductTable.insert {
             //it[id] = product.id
+            it[customerId] = product.customerId
             it[name] = product.name
             it[description] = product.description
         }
@@ -50,6 +54,7 @@ fun addProduct(product: Product) {
 fun updateProduct(product: Product) {
     transaction {
         ProductTable.update({ ProductTable.id eq product.id }) {
+            it[customerId] = product.customerId
             it[name] = product.name
             it[description] = product.description
         }

@@ -27,7 +27,6 @@ class ShoppingCartActivity: AppCompatActivity() {
         initRecyclerView()
 
         backArrowButton.setOnClickListener{
-            RealmHelper.deleteAllShoppingCartsByUserId(Globals.getCurrentUser().id)
             val intent = Intent(this, ShoppingScreenActivity::class.java)
             startActivity(intent)
         }
