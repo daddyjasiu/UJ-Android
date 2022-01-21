@@ -39,10 +39,11 @@ fun Route.productRouting() {
         }
 
         // deletes product
-        delete("/{id}") {
-            val id = call.parameters["id"]
-            if(id != null)
-                call.respond(deleteProductById(id.toInt()))
+        delete("/{customerId}/{productId}") {
+            val customerId = call.parameters["customerId"]
+            val productId = call.parameters["productId"]
+            if(customerId != null && productId != null)
+                call.respond(deleteProductByProductIdAndCustomerId(customerId.toString(), productId.toInt()))
         }
     }
 }

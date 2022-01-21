@@ -61,13 +61,6 @@ object RealmHelper {
             .findFirst()
     }
 
-    fun getAllProducts(): MutableList<ProductRealmModel> {
-
-        return Realm.getDefaultInstance()
-            .where(ProductRealmModel::class.java)
-            .findAll()
-    }
-
     fun getAllProductsByCustomerId(customerId: String): MutableList<ProductRealmModel> {
 
         return Realm.getDefaultInstance()
@@ -76,10 +69,14 @@ object RealmHelper {
             .findAll()
     }
 
-    fun deleteProductById(id: Int){
+    fun deleteProductByProductIdAndCustomerId(productId: Int, customerId: String){
         realm.executeTransaction{
             val rows: RealmResults<ProductRealmModel> =
-                realm.where(ProductRealmModel::class.java).equalTo("id", id).findAll()
+                realm.where(ProductRealmModel::class.java)
+                    .equalTo("id", productId)
+                    .and()
+                    .equalTo("customerId", customerId)
+                    .findAll()
             rows.deleteAllFromRealm()
         }
 
@@ -107,16 +104,6 @@ object RealmHelper {
             .and()
             .equalTo("password", password)
             .findFirst()
-    }
-
-    fun checkIfCustomerExistsById(id: String): Boolean{
-
-        val customer = Realm.getDefaultInstance()
-            .where(CustomerRealmModel::class.java)
-            .equalTo("id", id)
-            .findFirst()
-
-        return customer == null
     }
 
     fun syncRealmWithSQLite(customerId: String){

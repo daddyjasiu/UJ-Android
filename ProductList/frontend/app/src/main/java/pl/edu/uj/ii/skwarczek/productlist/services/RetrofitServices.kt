@@ -24,8 +24,8 @@ interface RetrofitService {
     @PUT("product")
     fun updateProductCall(@Body product: ProductModel) : Call<Unit>
 
-    @DELETE("product/{id}")
-    fun deleteProductByIdCall(@Path("id") productId: Int) : Call<Unit>
+    @DELETE("product/{customerId}/{productId}")
+    fun deleteProductByCustomerIdAndProductIdCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>
 
     @DELETE("product")
     fun deleteAllProductsCall() : Call<Unit>

@@ -13,7 +13,7 @@ data class Product(
 )
 
 object ProductTable : Table() {
-    val id = integer("id").autoIncrement()
+    val id = integer("id")
     override val primaryKey = PrimaryKey(id)
 
     val customerId = varchar("customerId", 100)
@@ -43,7 +43,7 @@ fun getProductByCustomerId(customerId : String) : List<Product> {
 fun addProduct(product: Product) {
     transaction {
         ProductTable.insert {
-            //it[id] = product.id
+            it[id] = product.id
             it[customerId] = product.customerId
             it[name] = product.name
             it[description] = product.description
@@ -54,6 +54,7 @@ fun addProduct(product: Product) {
 fun updateProduct(product: Product) {
     transaction {
         ProductTable.update({ ProductTable.id eq product.id }) {
+            it[id] = product.id
             it[customerId] = product.customerId
             it[name] = product.name
             it[description] = product.description
@@ -67,8 +68,8 @@ fun deleteAllProducts() {
     }
 }
 
-fun deleteProductById(id: Int) {
+fun deleteProductByProductIdAndCustomerId(customerId: String, productId: Int) {
     transaction {
-        ProductTable.deleteWhere { ProductTable.id eq id }
+        ProductTable.deleteWhere {(ProductTable.customerId eq customerId) and (ProductTable.id eq productId) }
     }
 }

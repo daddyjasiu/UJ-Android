@@ -12,7 +12,7 @@ data class Order(
     )
 
 object OrderTable : Table() {
-    val id = integer("id").autoIncrement()
+    val id = integer("id")
     override val primaryKey = PrimaryKey(id)
 
     val customerId = varchar("customerId", 100).references(CustomerTable.id)
@@ -43,12 +43,13 @@ fun getOrderById(id : Int) : List<Order> {
     }
 }
 
-fun placeOrder(customerId: String, totalPrice: Double) {
+fun placeOrder(id: Int, customerId: String, totalPrice: Double) {
     transaction {
         val customerCart = getShoppingCartByCustomerId(customerId)
         val orderId : Int
         if (customerCart.isNotEmpty()) {
             orderId = OrderTable.insert {
+                it[OrderTable.id] = id
                 it[OrderTable.customerId] = customerId
                 it[OrderTable.totalPrice] = totalPrice
             } get OrderTable.id
@@ -69,6 +70,7 @@ fun placeOrder(customerId: String, totalPrice: Double) {
 fun updateOrder(order: Order){
     transaction {
         OrderTable.update({ ProductTable.id eq order.id }) {
+            it[id] = order.id
             it[customerId] = order.customerId
             it[totalPrice] = order.totalPrice
         }

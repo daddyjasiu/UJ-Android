@@ -1,7 +1,6 @@
 package com.example.routes
 
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.response.*
 import io.ktor.routing.*
 import com.example.models.*
@@ -34,11 +33,12 @@ fun Route.orderRouting() {
         }
 
         // adds new order
-        post("/{customer_id}/{total_price}") {
-            val id = call.parameters["customer_id"]
+        post("/{order_id}/{customer_id}/{total_price}") {
+            val orderId = call.parameters["order_id"]
+            val customerId = call.parameters["customer_id"]
             val price = call.parameters["total_price"]
-            if(id != null && price != null)
-                call.respond(placeOrder(id.toString(), price.toDouble()))
+            if(orderId != null && customerId != null && price != null)
+                call.respond(placeOrder(orderId.toInt(), customerId.toString(), price.toDouble()))
         }
 
         // deletes an order by given id

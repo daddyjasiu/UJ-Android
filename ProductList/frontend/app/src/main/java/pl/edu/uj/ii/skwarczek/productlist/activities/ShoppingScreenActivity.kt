@@ -22,6 +22,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
+import okhttp3.ResponseBody
+
+
+
 
 class ShoppingScreenActivity : AppCompatActivity() {
 
@@ -43,7 +47,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         initView()
         initRecyclerView()
 
-        getProductsFromCacheByCustomerId(currentUser.uid)
+        getProductsByCustomerIdFromCache(currentUser.uid)
 
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -64,10 +68,9 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
                 addProductToCache(productRealm)
                 addProductToBackend(productBackend)
-                getProductsFromCacheByCustomerId(currentUser.uid)
+                getProductsByCustomerIdFromCache(currentUser.uid)
                 clearEditText()
             }
-
         }
 
         goToCartButton.setOnClickListener{
@@ -91,7 +94,6 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
     private fun addProductToCache(product: ProductRealmModel) {
         RealmHelper.addProduct(product)
-
     }
 
     private fun addProductToBackend(product: ProductModel){
@@ -119,7 +121,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getProductsFromCacheByCustomerId(customerId: String){
+    private fun getProductsByCustomerIdFromCache(customerId: String){
         val productList = RealmHelper.getAllProductsByCustomerId(customerId)
         productAdapter?.addItems(ArrayList(productList))
     }
@@ -127,22 +129,42 @@ class ShoppingScreenActivity : AppCompatActivity() {
     private fun deleteProductByProductId(productId: Int, customerId: String, showAlert: Boolean){
 
         if(!showAlert){
-            RealmHelper.deleteProductById(productId)
-            getProductsFromCacheByCustomerId(customerId)
+            RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)
+            deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
+            getProductsByCustomerIdFromCache(customerId)
         }
         else{
             val alert = AlertDialog.Builder(this)
             alert.setMessage("Are you sure you want to delete this wish?")
             alert.setCancelable(true)
             alert.setPositiveButton("Yes") { dialog, _ ->
-                RealmHelper.deleteProductById(productId)
-                getProductsFromCacheByCustomerId(customerId)
+                RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)
+                deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
+                getProductsByCustomerIdFromCache(customerId)
             }
             alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             alert.show()
         }
+    }
+
+    private fun deleteProductByProductIdAndCustomerIdFromBackend(productId: Int, customerId: String){
+        val service = RetrofitService.create()
+        val call = service.deleteProductByCustomerIdAndProductIdCall(customerId, productId)
+        call.enqueue(object : Callback<Unit?> {
+            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
+                if(response.isSuccessful) {
+                    Log.d("DELETE PRODUCT SUCCESS", response.message())
+                } else {
+                    Log.d("DELETE PRODUCT FAIL", response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<Unit?>, t: Throwable) {
+                Log.d("DELETE PRODUCT FAIL", t.message.toString())
+            }
+        })
     }
 
     private fun goToShoppingCart() {
