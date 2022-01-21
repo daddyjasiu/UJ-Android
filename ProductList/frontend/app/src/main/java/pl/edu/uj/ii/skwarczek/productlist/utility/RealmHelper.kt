@@ -68,10 +68,11 @@ object RealmHelper {
             .findAll()
     }
 
-    fun getAllProductsByUserId(userId: String): MutableList<ProductRealmModel> {
+    fun getAllProductsByCustomerId(customerId: String): MutableList<ProductRealmModel> {
 
         return Realm.getDefaultInstance()
             .where(ProductRealmModel::class.java)
+            .equalTo("customerId", customerId)
             .findAll()
     }
 

@@ -43,7 +43,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         initView()
         initRecyclerView()
 
-        getProductsFromCacheByUserId()
+        getProductsFromCacheByCustomerId(currentUser.uid)
 
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -64,7 +64,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
                 addProductToCache(productRealm)
                 addProductToBackend(productBackend)
-                getProductsFromCacheByUserId()
+                getProductsFromCacheByCustomerId(currentUser.uid)
                 clearEditText()
             }
 
@@ -85,7 +85,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
 
         productAdapter?.setOnClickDeleteButton {
-            deleteProductById(it.id, true)
+            deleteProductByProductId(it.id, currentUser.uid, true)
         }
     }
 
@@ -119,24 +119,24 @@ class ShoppingScreenActivity : AppCompatActivity() {
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getProductsFromCacheByUserId(userId: String){
-        val productList = RealmHelper.getAllProductsByUserId(userId)
+    private fun getProductsFromCacheByCustomerId(customerId: String){
+        val productList = RealmHelper.getAllProductsByCustomerId(customerId)
         productAdapter?.addItems(ArrayList(productList))
     }
 
-    private fun deleteProductById(id: Int, showAlert: Boolean){
+    private fun deleteProductByProductId(productId: Int, customerId: String, showAlert: Boolean){
 
         if(!showAlert){
-            RealmHelper.deleteProductById(id)
-            getProductsFromCacheByUserId()
+            RealmHelper.deleteProductById(productId)
+            getProductsFromCacheByCustomerId(customerId)
         }
         else{
             val alert = AlertDialog.Builder(this)
             alert.setMessage("Are you sure you want to delete this wish?")
             alert.setCancelable(true)
             alert.setPositiveButton("Yes") { dialog, _ ->
-                RealmHelper.deleteProductById(id)
-                getProductsFromCacheByUserId()
+                RealmHelper.deleteProductById(productId)
+                getProductsFromCacheByCustomerId(customerId)
             }
             alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
