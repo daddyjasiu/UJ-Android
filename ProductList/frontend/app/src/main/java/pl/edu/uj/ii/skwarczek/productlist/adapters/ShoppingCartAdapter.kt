@@ -38,7 +38,7 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCart
         return cartsList.size
     }
 
-    class ShoppingCartViewHolder(var view: View) : RecyclerView.ViewHolder(view){
+    class ShoppingCartViewHolder(view: View) : RecyclerView.ViewHolder(view){
         private var customerId = view.findViewById<TextView>(R.id.cart_item_customer_id)
         private var productId = view.findViewById<TextView>(R.id.cart_item_product_id)
 
