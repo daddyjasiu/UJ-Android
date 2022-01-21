@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "358425306767",
+    "project_id": "wishmaker-2b67c",
+    "storage_bucket": "wishmaker-2b67c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:358425306767:android:ce3c746040551235a2b2fa",
+        "android_client_info": {
+          "package_name": "pl.edu.uj.ii.skwarczek.productlist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "358425306767-ctisoir6dn6187ajcpql7d83rucqutd5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "pl.edu.uj.ii.skwarczek.productlist",
+            "certificate_hash": "2a951c1dc0701651fcbda5f4d0ad292d40abe53e"
+          }
+        },
+        {
+          "client_id": "358425306767-dekcdf9cout7mko473rbrm2laptq29g5.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyADNBE3VKqTZx50w-_cLKxoqmOURBClk_A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "358425306767-dekcdf9cout7mko473rbrm2laptq29g5.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

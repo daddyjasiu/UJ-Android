@@ -68,6 +68,13 @@ object RealmHelper {
             .findAll()
     }
 
+    fun getAllProductsByUserId(userId: String): MutableList<ProductRealmModel> {
+
+        return Realm.getDefaultInstance()
+            .where(ProductRealmModel::class.java)
+            .findAll()
+    }
+
     fun deleteProductById(id: Int){
         realm.executeTransaction{
             val rows: RealmResults<ProductRealmModel> =
@@ -83,7 +90,7 @@ object RealmHelper {
         }
     }
 
-    fun getCustomerById(id: Int): CustomerRealmModel? {
+    fun getCustomerById(id: String): CustomerRealmModel? {
 
         return Realm.getDefaultInstance()
             .where(CustomerRealmModel::class.java)
@@ -101,7 +108,7 @@ object RealmHelper {
             .findFirst()
     }
 
-    fun checkIfCustomerExistsById(id: Int): Boolean{
+    fun checkIfCustomerExistsById(id: String): Boolean{
 
         val customer = Realm.getDefaultInstance()
             .where(CustomerRealmModel::class.java)
@@ -111,14 +118,14 @@ object RealmHelper {
         return customer == null
     }
 
-    fun syncRealmWithSQLite(customerId: Int){
+    fun syncRealmWithSQLite(customerId: String){
         getProductsByCustomerIdFromSQL(customerId)
         getShoppingCartsByCustomerIdFromSQL(customerId)
     }
 
-    private fun getCurrentCustomerByIdFromSQL(id: Int): CustomerModel {
+    private fun getCurrentCustomerByIdFromSQL(id: String): CustomerModel {
 
-        var customer = CustomerModel(0, "", "", "", "")
+        var customer = CustomerModel("", "", "", "", "")
         val retrofit = Retrofit.Builder()
             .baseUrl(RetrofitService.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -180,7 +187,7 @@ object RealmHelper {
         })
     }
 
-    private fun getProductsByCustomerIdFromSQL(customerId: Int){
+    private fun getProductsByCustomerIdFromSQL(customerId: String){
         val retrofit = Retrofit.Builder()
             .baseUrl(RetrofitService.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -213,7 +220,7 @@ object RealmHelper {
         })
     }
 
-    private fun getShoppingCartsByCustomerIdFromSQL(customerId: Int){
+    private fun getShoppingCartsByCustomerIdFromSQL(customerId: String){
         val retrofit = Retrofit.Builder()
             .baseUrl(RetrofitService.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())

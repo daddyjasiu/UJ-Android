@@ -6,7 +6,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <Button
-        android:onClick="settingsClicked"
         android:id="@+id/settings_button"
         android:layout_width="0dp"
         android:layout_height="0dp"

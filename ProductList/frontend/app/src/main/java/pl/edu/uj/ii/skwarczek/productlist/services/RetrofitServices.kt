@@ -16,7 +16,7 @@ interface RetrofitService {
     fun getProductsCall() : Call<List<ProductModel>>
 
     @GET("product/{customerId}")
-    fun getProductsByCustomerIdCall(@Path("customerId") id : Int) : Call<List<ProductModel>>
+    fun getProductsByCustomerIdCall(@Path("customerId") id : String) : Call<List<ProductModel>>
 
     @POST("product")
     fun postProductCall(@Body product: ProductModel) : Call<Unit>
@@ -35,7 +35,7 @@ interface RetrofitService {
     fun getAllCustomersCall() : Call<List<CustomerModel>>
 
     @GET("customer/{id}")
-    fun getCustomerByIdCall(@Path("id") id : Int) : Call<CustomerModel>
+    fun getCustomerByIdCall(@Path("id") id : String) : Call<CustomerModel>
 
     @GET("customer/{email}/{password}")
     fun getCustomerByEmailAndPasswordCall(@Path("email") email: String, @Path("password") password: String) : Call<CustomerModel>
@@ -47,7 +47,7 @@ interface RetrofitService {
     fun putCustomerCall(@Body customer : CustomerModel) : Call<Unit>
 
     @DELETE("customer/{customerId}")
-    fun deleteCustomerCall(@Path("customerId") customerId: Int) : Call<Unit>
+    fun deleteCustomerCall(@Path("customerId") customerId: String) : Call<Unit>
 
     @DELETE("customer")
     fun deleteAllCustomersCall() : Call<Unit>
@@ -57,7 +57,7 @@ interface RetrofitService {
     fun getAllShoppingCartsCall() : Call<List<ShoppingCartModel>>
 
     @GET("cart/{customerId}")
-    fun getShoppingCartsByCustomerIdCall(@Path("customerId") customerId : Int) : Call<List<ShoppingCartModel>>
+    fun getShoppingCartsByCustomerIdCall(@Path("customerId") customerId : String) : Call<List<ShoppingCartModel>>
 
     @POST("cart")
     fun postShoppingCartCall(@Body cart: ProductModel) : Call<Unit>
@@ -66,10 +66,10 @@ interface RetrofitService {
     fun putShoppingCartCall(@Body cart: ProductModel) : Call<Unit>
 
     @DELETE("cart/{customerId}/{productId}")
-    fun deleteShoppingCartItemsCall(@Path("customerId") customerId: Int, @Path("productId") productId: Int) : Call<Unit>
+    fun deleteShoppingCartItemsCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>
 
     @DELETE("cart/{customerId}")
-    fun deleteShoppingCartByCustomerIdCall(@Path("customerId") customerId: Int) : Call<Unit>
+    fun deleteShoppingCartByCustomerIdCall(@Path("customerId") customerId: String) : Call<Unit>
 
     @DELETE("cart")
     fun deleteAllShoppingCarts() : Call<Unit>
@@ -79,10 +79,10 @@ interface RetrofitService {
     fun getAllOrdersCall() : Call<List<OrderModel>>
 
     @GET("order/customer/{customerId}")
-    fun getCustomerOrdersCall(@Path("customerId") customerId: Int) : Call<List<OrderModel>>
+    fun getCustomerOrdersCall(@Path("customerId") customerId: String) : Call<List<OrderModel>>
 
     @POST("order/{customerId}")
-    fun postCustomerOrderCall(@Path("customerId") customerId: Int) : Call<Unit>
+    fun postCustomerOrderCall(@Path("customerId") customerId: String) : Call<Unit>
 
     @DELETE("order/{id}")
     fun deleteOrderByIdCall(@Path("id") orderId: Int) : Call<Unit>
@@ -91,19 +91,19 @@ interface RetrofitService {
     fun deleteAllOrders() : Call<Unit>
 
     @GET("order/create-payment-intent/{customer_id}")
-    fun createPaymentIntentCall(@Path("customer_id") customerId: Int) : Call<String>
+    fun createPaymentIntentCall(@Path("customer_id") customerId: String) : Call<String>
 
     //    Order details
     @GET("orderDetails/{orderId}")
     fun getOrderDetailsByIdCall(@Path("orderId") orderId : Int) : Call<List<OrderDetailsModel>>
 
     @GET("orderDetails/customer/{customerId}")
-    fun getCustomerOrderDetailsCall(@Path("customerId") customerId: Int) : Call<List<OrderDetailsModel>>
+    fun getCustomerOrderDetailsCall(@Path("customerId") customerId: String) : Call<List<OrderDetailsModel>>
 
 
     companion object {
 
-        var BASE_URL = "https://77d7-185-58-160-75.ngrok.io"
+        var BASE_URL = "https://ad90-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 

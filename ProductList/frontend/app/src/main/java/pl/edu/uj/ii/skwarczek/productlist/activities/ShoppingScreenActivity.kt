@@ -2,27 +2,39 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductAdapter
+import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
+import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import kotlin.random.Random
 
 class ShoppingScreenActivity : AppCompatActivity() {
 
+    private lateinit var auth: FirebaseAuth
     private lateinit var wishName: EditText
     private lateinit var wishDescription: EditText
-    private lateinit var wishButton: Button
+    private lateinit var makeAWishButton: Button
     private lateinit var goToCartButton: Button
     private lateinit var cartRecyclerView: RecyclerView
+    private lateinit var settingsButton: Button
     private var productAdapter: ProductAdapter? = null
     private var product: ProductRealmModel? = null
+    private lateinit var currentUser: FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,11 +43,31 @@ class ShoppingScreenActivity : AppCompatActivity() {
         initView()
         initRecyclerView()
 
-        getProductsFromCache()
+        getProductsFromCacheByUserId()
 
-        wishButton.setOnClickListener{
-            addProductToCache()
-            getProductsFromCache()
+        settingsButton.setOnClickListener {
+            startActivity(Intent(this, SettingsActivity::class.java))
+        }
+
+        makeAWishButton.setOnClickListener{
+
+            val name = wishName.text.toString()
+            val description = wishDescription.text.toString()
+
+            if (name.isEmpty() || description.isEmpty()){
+                Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                val random = Random.nextInt(0, Int.MAX_VALUE)
+                val productRealm = ProductRealmModel(random, currentUser.uid, name, description)
+                val productBackend = ProductModel(random, currentUser.uid, name, description)
+
+                addProductToCache(productRealm)
+                addProductToBackend(productBackend)
+                getProductsFromCacheByUserId()
+                clearEditText()
+            }
+
         }
 
         goToCartButton.setOnClickListener{
@@ -57,20 +89,27 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
     }
 
-    private fun addProductToCache() {
-        val name = wishName.text.toString()
-        val description = wishDescription.text.toString()
+    private fun addProductToCache(product: ProductRealmModel) {
+        RealmHelper.addProduct(product)
 
-        if (name.isEmpty() || description.isEmpty()){
-            Toast.makeText(this, "Please fill required fields", Toast.LENGTH_SHORT).show()
-        }
-        else{
-            val random = Random.nextInt(0, Int.MAX_VALUE)
-            val product = ProductRealmModel(random, Globals.getCurrentUser()!!.id, name, description)
-            RealmHelper.addProduct(product)
-            clearEditText()
+    }
 
-        }
+    private fun addProductToBackend(product: ProductModel){
+
+        val service = RetrofitService.create()
+        val call = service.postProductCall(product)
+        call.enqueue(object : Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if(response.isSuccessful) {
+                    Log.d("POST PRODUCT SUCCESS", response.message())
+                } else {
+                    Log.d("POST PRODUCT FAIL", response.message())
+                }
+            }
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.d("POST PRODUCT FAIL", t.message.toString())
+            }
+        })
     }
 
     private fun addProductToCart(product: ProductRealmModel){
@@ -80,8 +119,8 @@ class ShoppingScreenActivity : AppCompatActivity() {
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()
     }
 
-    private fun getProductsFromCache(){
-        val productList = RealmHelper.getAllProducts()
+    private fun getProductsFromCacheByUserId(userId: String){
+        val productList = RealmHelper.getAllProductsByUserId(userId)
         productAdapter?.addItems(ArrayList(productList))
     }
 
@@ -89,7 +128,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
         if(!showAlert){
             RealmHelper.deleteProductById(id)
-            getProductsFromCache()
+            getProductsFromCacheByUserId()
         }
         else{
             val alert = AlertDialog.Builder(this)
@@ -97,20 +136,13 @@ class ShoppingScreenActivity : AppCompatActivity() {
             alert.setCancelable(true)
             alert.setPositiveButton("Yes") { dialog, _ ->
                 RealmHelper.deleteProductById(id)
-                getProductsFromCache()
+                getProductsFromCacheByUserId()
             }
             alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
             }
             alert.show()
         }
-    }
-
-    fun settingsClicked(view: android.view.View) {
-//        val intent = Intent(this,SettingsActivity::class.java)
-//        startActivity(intent)
-//        getCurrentData()
-//        RealmHelper.clearDB()
     }
 
     private fun goToShoppingCart() {
@@ -131,10 +163,13 @@ class ShoppingScreenActivity : AppCompatActivity() {
     }
 
     private fun initView(){
+        auth = Firebase.auth
+        currentUser = auth.currentUser!!
         wishName = findViewById(R.id.wish)
         wishDescription = findViewById(R.id.wish_description)
-        wishButton = findViewById(R.id.wish_button)
+        makeAWishButton = findViewById(R.id.wish_button)
         goToCartButton = findViewById(R.id.go_to_cart_button)
         cartRecyclerView = findViewById(R.id.product_list_recycler_view)
+        settingsButton = findViewById(R.id.settings_button)
     }
 }

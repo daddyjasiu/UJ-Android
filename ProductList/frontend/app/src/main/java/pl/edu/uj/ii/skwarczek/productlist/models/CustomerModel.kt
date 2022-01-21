@@ -3,7 +3,7 @@ package pl.edu.uj.ii.skwarczek.productlist.models
 import io.realm.RealmObject
 
 data class CustomerModel (
-    var id: Int = 0,
+    var id: String = "",
     var firstName: String = "",
     var lastName: String = "",
     var email: String = "",
@@ -11,7 +11,7 @@ data class CustomerModel (
 )
 
 open class CustomerRealmModel(
-    var id: Int = 0,
+    var id: String = "",
     var firstName: String = "",
     var lastName: String = "",
     var email: String = "",

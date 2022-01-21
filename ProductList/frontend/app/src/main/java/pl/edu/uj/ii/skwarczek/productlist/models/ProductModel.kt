@@ -4,14 +4,14 @@ import io.realm.RealmObject
 
 data class ProductModel (
     var id: Int = 0,
-    var customerId: Int = 0,
+    var customerId: String = "",
     var name: String = "",
     var description: String = "",
 )
 
 open class ProductRealmModel(
     var id: Int = 0,
-    var customerId: Int = 0,
+    var customerId: String = "",
     var name: String = "",
     var description: String = "",
 ) : RealmObject()

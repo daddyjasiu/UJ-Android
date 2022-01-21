@@ -18,7 +18,7 @@ fun Route.orderRouting() {
         get("/customer/{customer_id}") {
             val id = call.parameters["customer_id"]
             if(id != null)
-                call.respond(getOrdersByCustomerId(id.toInt()))
+                call.respond(getOrdersByCustomerId(id.toString()))
         }
 
         // gets order by given id
@@ -38,7 +38,7 @@ fun Route.orderRouting() {
             val id = call.parameters["customer_id"]
             val price = call.parameters["total_price"]
             if(id != null && price != null)
-                call.respond(placeOrder(id.toInt(), price.toDouble()))
+                call.respond(placeOrder(id.toString(), price.toDouble()))
         }
 
         // deletes an order by given id

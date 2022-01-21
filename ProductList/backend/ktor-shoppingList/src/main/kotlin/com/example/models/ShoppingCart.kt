@@ -6,14 +6,14 @@ import org.jetbrains.exposed.sql.transactions.transaction
 
 @Serializable
 data class ShoppingCart(
-    val customerId: Int = 0,
+    val customerId: String = "",
     val productId: Int = 0,
     val productName: String = "",
     val productDescription: String = "",
 )
 
 object ShoppingCartTable : Table(){
-    val customerId = integer("customerId").references(CustomerTable.id)
+    val customerId = varchar("customerId", 100).references(CustomerTable.id)
     val productId = integer("productId").references(ProductTable.id)
     override val primaryKey = PrimaryKey(customerId, productId)
 
@@ -35,7 +35,7 @@ fun getAllShoppingCarts() : List<ShoppingCart> {
     }
 }
 
-fun getShoppingCartByCustomerId(customerId : Int) : List<ShoppingCart> {
+fun getShoppingCartByCustomerId(customerId : String) : List<ShoppingCart> {
     return transaction {
         ShoppingCartTable.select { ShoppingCartTable.customerId eq customerId }.map { it.toShoppingCart() }
     }
@@ -61,13 +61,13 @@ fun updateShoppingCart(cart: ShoppingCart) {
     }
 }
 
-fun deleteShoppingCartByCustomerId(customerId: Int) {
+fun deleteShoppingCartByCustomerId(customerId: String) {
     transaction {
         ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId }
     }
 }
 
-fun deleteShoppingCartByCustomerIdAndProductId(customerId: Int, productId: Int) {
+fun deleteShoppingCartByCustomerIdAndProductId(customerId: String, productId: Int) {
     transaction {
         ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId and (ShoppingCartTable.productId eq productId) }
     }

@@ -16,7 +16,7 @@ fun Route.productRouting() {
         get("/{customerId}") {
             val customerId = call.parameters["customerId"]
             if(customerId != null) {
-                val product = getProductByCustomerId(customerId.toInt())
+                val product = getProductByCustomerId(customerId.toString())
                 call.respond(product)
             }
         }

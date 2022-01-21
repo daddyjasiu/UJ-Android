@@ -7,7 +7,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 @Serializable
 data class Order(
     val id: Int = 0,
-    val customerId: Int = 0,
+    val customerId: String = "",
     val totalPrice: Double = -1.0,
     )
 
@@ -15,7 +15,7 @@ object OrderTable : Table() {
     val id = integer("id").autoIncrement()
     override val primaryKey = PrimaryKey(id)
 
-    val customerId = integer("customerId").references(CustomerTable.id)
+    val customerId = varchar("customerId", 100).references(CustomerTable.id)
     val totalPrice = double("totalPrice")
 }
 
@@ -31,7 +31,7 @@ fun getAllOrders() : List<Order> {
     }
 }
 
-fun getOrdersByCustomerId(customerId: Int) : List<Order> {
+fun getOrdersByCustomerId(customerId: String) : List<Order> {
     return transaction {
         OrderTable.select { OrderTable.customerId eq customerId }.map { it.toOrder() }
     }
@@ -43,7 +43,7 @@ fun getOrderById(id : Int) : List<Order> {
     }
 }
 
-fun placeOrder(customerId: Int, totalPrice: Double) {
+fun placeOrder(customerId: String, totalPrice: Double) {
     transaction {
         val customerCart = getShoppingCartByCustomerId(customerId)
         val orderId : Int
