@@ -16,15 +16,14 @@ import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
+import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartModel
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
-import okhttp3.ResponseBody
-
-
+import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
 
 
 class ShoppingScreenActivity : AppCompatActivity() {
@@ -88,7 +87,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
 
         productAdapter?.setOnClickDeleteButton {
-            deleteProductByProductId(it.id, currentUser.uid, true)
+            deleteProduct(it.id, currentUser.uid, true)
         }
     }
 
@@ -114,10 +113,29 @@ class ShoppingScreenActivity : AppCompatActivity() {
         })
     }
 
-    private fun addProductToCart(product: ProductRealmModel){
-        //RealmHelper.addProductToCart(product)
+    private fun addShoppingCartToBackend(shoppingCart: ShoppingCartModel){
 
-        //deleteProductById(product.id, false)
+        val service = RetrofitService.create()
+        val call = service.postShoppingCartCall(shoppingCart)
+        call.enqueue(object : Callback<Unit> {
+            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                if(response.isSuccessful) {
+                    Log.d("POST SHOPPING_CART SUCCESS", response.message())
+                } else {
+                    Log.d("POST SHOPPING_CART FAIL", response.message())
+                }
+            }
+            override fun onFailure(call: Call<Unit>, t: Throwable) {
+                Log.d("POST SHOPPING_CART FAIL", t.message.toString())
+            }
+        })
+    }
+
+    private fun addProductToCart(product: ProductRealmModel){
+        RealmHelper.addShoppingCart(ShoppingCartRealmModel(product.customerId, product.id, product.name, product.description))
+        addShoppingCartToBackend(ShoppingCartModel(product.customerId, product.id, product.name, product.description))
+        deleteProduct(product.id, product.customerId, false)
+
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()
     }
 
@@ -126,7 +144,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         productAdapter?.addItems(ArrayList(productList))
     }
 
-    private fun deleteProductByProductId(productId: Int, customerId: String, showAlert: Boolean){
+    private fun deleteProduct(productId: Int, customerId: String, showAlert: Boolean){
 
         if(!showAlert){
             RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)

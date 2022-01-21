@@ -29,6 +29,7 @@ class ShoppingCartActivity: AppCompatActivity() {
         backArrowButton.setOnClickListener{
             val intent = Intent(this, ShoppingScreenActivity::class.java)
             startActivity(intent)
+            finish()
         }
         getCartItems()
     }

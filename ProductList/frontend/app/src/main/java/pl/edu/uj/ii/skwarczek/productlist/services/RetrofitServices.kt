@@ -60,10 +60,10 @@ interface RetrofitService {
     fun getShoppingCartsByCustomerIdCall(@Path("customerId") customerId : String) : Call<List<ShoppingCartModel>>
 
     @POST("cart")
-    fun postShoppingCartCall(@Body cart: ProductModel) : Call<Unit>
+    fun postShoppingCartCall(@Body cart: ShoppingCartModel) : Call<Unit>
 
     @PUT("cart")
-    fun putShoppingCartCall(@Body cart: ProductModel) : Call<Unit>
+    fun putShoppingCartCall(@Body cart: ShoppingCartModel) : Call<Unit>
 
     @DELETE("cart/{customerId}/{productId}")
     fun deleteShoppingCartItemsCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>

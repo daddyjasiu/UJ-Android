@@ -21,9 +21,8 @@ object RealmHelper {
         realm.commitTransaction()
     }
 
-    fun addShoppingCart(shoppingCart: ShoppingCartModel){
+    fun addShoppingCart(cart: ShoppingCartRealmModel){
 
-        val cart = ShoppingCartRealmModel(shoppingCart.customerId, shoppingCart.productId, shoppingCart.productName, shoppingCart.productDescription)
         realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
             bgRealm.insert(cart)
 
@@ -107,8 +106,7 @@ object RealmHelper {
     }
 
     fun syncRealmWithSQLite(customerId: String){
-        getProductsByCustomerIdFromSQL(customerId)
-        getShoppingCartsByCustomerIdFromSQL(customerId)
+
     }
 
     private fun getCurrentCustomerByIdFromSQL(id: String): CustomerModel {
@@ -223,9 +221,6 @@ object RealmHelper {
 
                     val cartList = response.body()!!
 
-                    for(cart in cartList){
-                        addShoppingCart(cart)
-                    }
                 }
             }
             override fun onFailure(call: Call<List<ShoppingCartModel>>, t: Throwable) {
