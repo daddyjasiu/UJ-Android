@@ -40,10 +40,12 @@ object RealmHelper {
             .findAll()
     }
 
-    fun deleteAllShoppingCartsByCustomerId(customerId: Int){
+    fun deleteAllShoppingCartsByCustomerId(customerId: String){
         realm.executeTransaction{
             val rows: RealmResults<ShoppingCartRealmModel> =
-                realm.where(ShoppingCartRealmModel::class.java).equalTo("customerId", customerId).findAll()
+                realm.where(ShoppingCartRealmModel::class.java)
+                    .equalTo("customerId", customerId)
+                    .findAll()
             rows.deleteAllFromRealm()
         }
     }
@@ -94,73 +96,11 @@ object RealmHelper {
 
     }
 
-    fun syncRealmWithSQLite(customerId: String){
-
-    }
-
-    private fun getProductsByCustomerIdFromSQL(customerId: String){
-        val retrofit = Retrofit.Builder()
-            .baseUrl(RetrofitService.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
-        val call = service.getProductsByCustomerIdCall(customerId)
-
-        call.enqueue(object : Callback<List<ProductModel>> {
-            override fun onResponse(call: Call<List<ProductModel>>, response: Response<List<ProductModel>>) {
-
-                if (response.code() == 200) {
-
-                    val productList = response.body()!!
-
-                    for(product in productList){
-                        addProduct(
-                            ProductRealmModel(
-                            product.id,
-                            product.customerId,
-                            product.name,
-                            product.description,
-                        )
-                        )
-                    }
-                }
-            }
-            override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
-                println("DB SYNC: PRODUCTS BY CUSTOMER_ID SYNC FAILED, NO PRODUCTS WITH GIVEN ID FOUND")
-            }
-        })
-    }
-
-    private fun getShoppingCartsByCustomerIdFromSQL(customerId: String){
-        val retrofit = Retrofit.Builder()
-            .baseUrl(RetrofitService.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
-        val call = service.getShoppingCartsByCustomerIdCall(customerId)
-
-        call.enqueue(object : Callback<List<ShoppingCartModel>> {
-            override fun onResponse(call: Call<List<ShoppingCartModel>>, response: Response<List<ShoppingCartModel>>) {
-
-                if (response.code() == 200) {
-
-                    val cartList = response.body()!!
-
-                }
-            }
-            override fun onFailure(call: Call<List<ShoppingCartModel>>, t: Throwable) {
-                println("DB SYNC: SHOPPING_CARTS BY CUSTOMER_ID SYNC FAILED, NO CARTS WITH GIVEN ID FOUND")
-            }
-        })
-
-    }
-
-    private fun getOrdersFromSQL(){
-
-    }
-
-    private fun getOrderDetailsFromSQL(){
-
+    fun placeOrder(order: OrderRealmModel, orderDetails: OrderDetailsRealmModel){
+        realm.executeTransaction { bgRealm ->
+            bgRealm.insert(order)
+            bgRealm.insert(orderDetails)
+        }
     }
 
 }
