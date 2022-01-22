@@ -10,7 +10,7 @@ import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 
-class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
+class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>(){
 
     private var productsRealmList: ArrayList<ProductRealmModel> = arrayListOf()
     private var productsModelList: List<ProductModel> = arrayListOf()
@@ -48,7 +48,7 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ProductViewHolder (
-        LayoutInflater.from(parent.context).inflate(R.layout.product_list_item_fragment, parent, false)
+        LayoutInflater.from(parent.context).inflate(R.layout.fragment_product_list_item, parent, false)
     )
 
     override fun onBindViewHolder(holder: ProductViewHolder, position: Int) {
@@ -63,16 +63,14 @@ class ProductAdapter : RecyclerView.Adapter<ProductAdapter.ProductViewHolder>(){
         return productsRealmList.size
     }
 
-    class ProductViewHolder(var view: View) : RecyclerView.ViewHolder(view){
+    class ProductViewHolder(view: View) : RecyclerView.ViewHolder(view){
 
-        private var id = view.findViewById<TextView>(R.id.product_list_item_product_id)
         private var name = view.findViewById<TextView>(R.id.product_list_item_product_name)
         private var description = view.findViewById<TextView>(R.id.product_list_item_product_description)
-        var addToCartButton: Button = view.findViewById<Button>(R.id.add_to_cart_cart_item_button)
-        var deleteButton: Button = view.findViewById<Button>(R.id.delete_cart_item_button)
+        var addToCartButton: Button = view.findViewById(R.id.add_to_cart_cart_item_button)
+        var deleteButton: Button = view.findViewById(R.id.delete_cart_item_button)
 
         fun bindView(product: ProductRealmModel){
-            id.text = product.id.toString()
             name.text = product.name
             description.text = product.description
         }

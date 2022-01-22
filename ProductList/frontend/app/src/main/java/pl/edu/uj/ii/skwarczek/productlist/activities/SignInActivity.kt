@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.widget.EditText
 import android.widget.Toast
 import androidx.viewpager2.widget.ViewPager2
 import com.google.android.gms.auth.api.signin.GoogleSignIn
@@ -18,18 +17,8 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.runBlocking
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.SignInAdapter
-import pl.edu.uj.ii.skwarczek.productlist.models.CustomerRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import pl.edu.uj.ii.skwarczek.productlist.models.CustomerModel
-import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
-import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
-import kotlin.random.Random
 
 class SignInActivity : AppCompatActivity() {
 
@@ -74,7 +63,7 @@ class SignInActivity : AppCompatActivity() {
             Log.w(TAG,"User is null, not going to navigate")
         }
         else{
-            startActivity(Intent(this, ShoppingScreenActivity::class.java))
+            startActivity(Intent(this, WishMakingActivity::class.java))
             finish()
         }
     }

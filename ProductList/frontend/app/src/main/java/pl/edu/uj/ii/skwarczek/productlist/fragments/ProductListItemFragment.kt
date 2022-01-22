@@ -13,6 +13,6 @@ class ProductListItemFragment : Fragment(){
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.product_list_item_fragment, container, false)
+        return inflater.inflate(R.layout.fragment_product_list_item, container, false)
     }
 }

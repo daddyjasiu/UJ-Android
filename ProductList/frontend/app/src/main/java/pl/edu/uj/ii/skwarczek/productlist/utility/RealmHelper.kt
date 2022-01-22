@@ -32,17 +32,30 @@ object RealmHelper {
         })
     }
 
-    fun getAllShoppingCarts(): List<ShoppingCartRealmModel>{
+    fun getShoppingCartsByCustomerId(customerId: String): List<ShoppingCartRealmModel>{
 
         return Realm.getDefaultInstance()
             .where(ShoppingCartRealmModel::class.java)
+            .equalTo("customerId", customerId)
             .findAll()
     }
 
-    fun deleteAllShoppingCartsByUserId(id: Int){
+    fun deleteAllShoppingCartsByCustomerId(customerId: Int){
         realm.executeTransaction{
             val rows: RealmResults<ShoppingCartRealmModel> =
-                realm.where(ShoppingCartRealmModel::class.java).equalTo("customerId", id).findAll()
+                realm.where(ShoppingCartRealmModel::class.java).equalTo("customerId", customerId).findAll()
+            rows.deleteAllFromRealm()
+        }
+    }
+
+    fun deleteShoppingCartByCustomerIdAndProductId(customerId: String, productId: Int){
+        realm.executeTransaction{
+            val rows: RealmResults<ShoppingCartRealmModel> =
+                realm.where(ShoppingCartRealmModel::class.java)
+                    .equalTo("customerId", customerId)
+                    .and()
+                    .equalTo("productId", productId)
+                    .findAll()
             rows.deleteAllFromRealm()
         }
     }
@@ -81,96 +94,8 @@ object RealmHelper {
 
     }
 
-    fun addCustomer(customer: CustomerRealmModel){
-        realm.executeTransaction { bgRealm ->
-            bgRealm.insert(customer)
-        }
-    }
-
-    fun getCustomerById(id: String): CustomerRealmModel? {
-
-        return Realm.getDefaultInstance()
-            .where(CustomerRealmModel::class.java)
-            .equalTo("id", id)
-            .findFirst()
-    }
-
-    fun getCustomerByEmailAndPassword(email: String, password: String): CustomerRealmModel? {
-
-        return Realm.getDefaultInstance()
-            .where(CustomerRealmModel::class.java)
-            .equalTo("email", email)
-            .and()
-            .equalTo("password", password)
-            .findFirst()
-    }
-
     fun syncRealmWithSQLite(customerId: String){
 
-    }
-
-    private fun getCurrentCustomerByIdFromSQL(id: String): CustomerModel {
-
-        var customer = CustomerModel("", "", "", "", "")
-        val retrofit = Retrofit.Builder()
-            .baseUrl(RetrofitService.BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-        val service: RetrofitService = retrofit.create(RetrofitService::class.java)
-        val call = service.getCustomerByIdCall(id)
-
-        call.enqueue(object : Callback<CustomerModel> {
-            override fun onResponse(call: Call<CustomerModel>, response: Response<CustomerModel>) {
-
-                if (response.code() == 200) {
-
-                    val currentCustomer =  response.body()!!
-
-                    customer = CustomerModel(
-                        currentCustomer.id,
-                        currentCustomer.firstName,
-                        currentCustomer.lastName,
-                        currentCustomer.email,
-                        currentCustomer.password
-                    )
-                }
-            }
-
-            override fun onFailure(call: Call<CustomerModel>, t: Throwable) {
-                println("DB SYNC: CUSTOMER SYNC FAILED, NO CUSTOMER WITH GIVEN ID FOUND")
-            }
-        })
-
-        return customer
-    }
-
-    fun getCurrentCustomerByNameAndPasswordFromSQL(name: String, password: String) {
-
-        val service = RetrofitService.create()
-        val call = service.getCustomerByEmailAndPasswordCall(name, password)
-
-        call.enqueue(object : Callback<CustomerModel> {
-            override fun onResponse(call: Call<CustomerModel>, response: Response<CustomerModel>) {
-
-                if (response.isSuccessful && response.body() != null) {
-
-                    val currentCustomer = response.body()!!
-                    println("${currentCustomer.id}, ${currentCustomer.email}")
-                    addCustomer(CustomerRealmModel(
-                        currentCustomer.id,
-                        currentCustomer.firstName,
-                        currentCustomer.lastName,
-                        currentCustomer.email,
-                        currentCustomer.password
-                    ))
-                }
-            }
-
-            override fun onFailure(call: Call<CustomerModel>, t: Throwable) {
-                println("DB SYNC: CUSTOMER SYNC FAILED, NO CUSTOMER WITH GIVEN NAME AND PASSWORD FOUND")
-                println(t.message)
-            }
-        })
     }
 
     private fun getProductsByCustomerIdFromSQL(customerId: String){

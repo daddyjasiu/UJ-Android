@@ -66,7 +66,7 @@ interface RetrofitService {
     fun putShoppingCartCall(@Body cart: ShoppingCartModel) : Call<Unit>
 
     @DELETE("cart/{customerId}/{productId}")
-    fun deleteShoppingCartItemsCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>
+    fun deleteShoppingCartByCustomerIdAndProductIdCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>
 
     @DELETE("cart/{customerId}")
     fun deleteShoppingCartByCustomerIdCall(@Path("customerId") customerId: String) : Call<Unit>
@@ -103,7 +103,7 @@ interface RetrofitService {
 
     companion object {
 
-        var BASE_URL = "https://ad90-185-58-160-75.ngrok.io"
+        var BASE_URL = "https://e2bc-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 

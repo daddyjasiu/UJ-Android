@@ -11,7 +11,7 @@ class ProductListFragment : Fragment(){
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val root = inflater.inflate(R.layout.product_list_fragment, container, false)
+        val root = inflater.inflate(R.layout.fragment_product_list, container, false)
         return root
     }
 }

@@ -13,7 +13,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductAdapter
+import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartModel
@@ -25,8 +25,7 @@ import retrofit2.Response
 import kotlin.random.Random
 import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
 
-
-class ShoppingScreenActivity : AppCompatActivity() {
+class WishMakingActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var wishName: EditText
@@ -35,7 +34,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
     private lateinit var goToCartButton: Button
     private lateinit var cartRecyclerView: RecyclerView
     private lateinit var settingsButton: Button
-    private var productAdapter: ProductAdapter? = null
+    private var productAdapter: ProductListAdapter? = null
     private var product: ProductRealmModel? = null
     private lateinit var currentUser: FirebaseUser
 
@@ -77,9 +76,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
         }
 
         productAdapter?.setOnClickItem {
-            wishName.setText(it.name)
-            wishDescription.setText(it.description)
-            product = it
+
         }
 
         productAdapter?.setOnClickAddToCartButton {
@@ -159,6 +156,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
                 RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)
                 deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
                 getProductsByCustomerIdFromCache(customerId)
+                Toast.makeText(this, "Wish removed!", Toast.LENGTH_SHORT).show()
             }
             alert.setNegativeButton("No") { dialog, _ ->
                 dialog.dismiss()
@@ -198,7 +196,7 @@ class ShoppingScreenActivity : AppCompatActivity() {
 
     private fun initRecyclerView(){
         cartRecyclerView.layoutManager = LinearLayoutManager(this)
-        productAdapter = ProductAdapter()
+        productAdapter = ProductListAdapter()
         cartRecyclerView.adapter = productAdapter
     }
 

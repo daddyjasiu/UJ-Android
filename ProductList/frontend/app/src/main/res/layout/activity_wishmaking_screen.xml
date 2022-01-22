@@ -33,7 +33,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/settings_button"
-        tools:layout="@layout/wish_input_fragment" />
+        tools:layout="@layout/fragment_wish_input" />
 
     <fragment
         android:id="@+id/wish_list_fragment"
@@ -45,6 +45,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/wish_input_fragment"
-        tools:layout="@layout/product_list_fragment" />
+        tools:layout="@layout/fragment_product_list" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
