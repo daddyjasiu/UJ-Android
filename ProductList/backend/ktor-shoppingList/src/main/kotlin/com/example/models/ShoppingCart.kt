@@ -17,8 +17,8 @@ object ShoppingCartTable : Table(){
     val productId = integer("productId").references(ProductTable.id)
     override val primaryKey = PrimaryKey(customerId, productId)
 
-    val productName = varchar("productName", 50)
-    val productDescription = varchar("productDescription", 500)
+    val productName = varchar("productName", 100)
+    val productDescription = varchar("productDescription", 2000)
 }
 
 fun ResultRow.toShoppingCart() = ShoppingCart(
@@ -26,7 +26,6 @@ fun ResultRow.toShoppingCart() = ShoppingCart(
     productId = this[ShoppingCartTable.productId],
     productName = this[ShoppingCartTable.productName],
     productDescription = this[ShoppingCartTable.productDescription]
-
 )
 
 fun getAllShoppingCarts() : List<ShoppingCart> {

@@ -17,8 +17,8 @@ object ProductTable : Table() {
     override val primaryKey = PrimaryKey(id)
 
     val customerId = varchar("customerId", 100)
-    val name = varchar("name", 50)
-    val description = varchar("description", 500)
+    val name = varchar("name", 100)
+    val description = varchar("description", 2000)
 }
 
 fun ResultRow.toProduct() = Product(

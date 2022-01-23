@@ -32,7 +32,6 @@ class WishMakingActivity : AppCompatActivity() {
     private lateinit var cartRecyclerView: RecyclerView
     private lateinit var settingsButton: Button
     private var productAdapter: ProductListAdapter? = null
-    private var product: ProductRealmModel? = null
     private lateinit var currentUser: FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,7 +72,13 @@ class WishMakingActivity : AppCompatActivity() {
         }
 
         productAdapter?.setOnClickItem {
-
+            val alert = AlertDialog.Builder(this)
+            alert.setMessage("${it.name}\n\n${it.description}")
+            alert.setPositiveButton("OK"){ dialog, _ ->
+                dialog.dismiss()
+            }
+            alert.setCancelable(true)
+            alert.show()
         }
 
         productAdapter?.setOnClickAddToCartButton {

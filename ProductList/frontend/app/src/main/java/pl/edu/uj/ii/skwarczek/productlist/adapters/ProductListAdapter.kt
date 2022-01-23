@@ -13,7 +13,6 @@ import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ProductViewHolder>(){
 
     private var productsRealmList: ArrayList<ProductRealmModel> = arrayListOf()
-    private var productsModelList: List<ProductModel> = arrayListOf()
     private var onClickItem: ((ProductRealmModel) -> Unit)? = null
     private var onClickAddToCartButton: ((ProductRealmModel) -> Unit)? = null
     private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
@@ -21,18 +20,6 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ProductViewHo
     fun addItems(items: ArrayList<ProductRealmModel>){
         this.productsRealmList = items
         notifyDataSetChanged()
-    }
-
-    fun addItems(items: List<ProductModel>){
-        this.productsModelList = items
-        notifyDataSetChanged()
-    }
-
-    fun deleteItemFromView(item: ProductRealmModel){
-        if(this.productsRealmList.contains(item)){
-            this.productsRealmList.remove(item)
-            notifyDataSetChanged()
-        }
     }
 
     fun setOnClickItem(callback: (ProductRealmModel) -> Unit){

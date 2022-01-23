@@ -54,21 +54,33 @@ class ShoppingCartActivity: AppCompatActivity() {
         goToOrdersButton.setOnClickListener {
             val intent = Intent(this, OrdersActivity::class.java)
             startActivity(intent)
+            finish()
         }
 
         shoppingCartAdapter?.setOnClickDeleteButton {
             deleteShoppingCartItem(it.customerId, it.productId)
         }
 
+        shoppingCartAdapter?.setOnClickItem {
+            val alert = AlertDialog.Builder(this)
+            alert.setMessage("${it.productName}\n\n${it.productDescription}")
+            alert.setPositiveButton("OK"){ dialog, _ ->
+                dialog.dismiss()
+            }
+            alert.setCancelable(true)
+            alert.show()
+        }
+
         getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
     }
+
 
     private fun placeOrder(){
 
         val alert = AlertDialog.Builder(this)
         alert.setMessage("Are you sure you want to place an order? \n\nIt cannot be canceled!")
         alert.setCancelable(true)
-        alert.setPositiveButton("Yes") { dialog, _ ->
+        alert.setPositiveButton("Yes") { _, _ ->
             val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
             val randomId = Random.nextInt(0, Int.MAX_VALUE)
             placeOrderToCache(randomId, cartList)
