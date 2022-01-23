@@ -90,11 +90,23 @@ object RealmHelper {
 
     }
 
-    fun placeOrder(order: OrderRealmModel, orderDetails: OrderDetailsRealmModel){
+    fun placeOrder(order: OrderRealmModel){
         realm.executeTransaction { bgRealm ->
             bgRealm.insert(order)
+        }
+    }
+
+    fun placeOrderDetails(orderDetails: OrderDetailsRealmModel){
+        realm.executeTransaction { bgRealm ->
             bgRealm.insert(orderDetails)
         }
+    }
+
+    fun getOrdersByCustomerId(customerId: String) : List<OrderRealmModel>{
+        return Realm.getDefaultInstance()
+            .where(OrderRealmModel::class.java)
+            .equalTo("customerId", customerId)
+            .findAll()
     }
 
 }

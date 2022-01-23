@@ -70,8 +70,9 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.setCancelable(true)
         alert.setPositiveButton("Yes") { dialog, _ ->
             val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
-            placeOrderToCache(cartList)
-            placeOrderToBackend()
+            val randomId = Random.nextInt(0, Int.MAX_VALUE)
+            placeOrderToCache(randomId, cartList)
+            placeOrderToBackend(randomId)
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
         }
@@ -81,20 +82,21 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.show()
     }
 
-    private fun placeOrderToCache(cartList: List<ShoppingCartRealmModel>){
+    private fun placeOrderToCache(randomId: Int, cartList: List<ShoppingCartRealmModel>){
+
+        val order = OrderRealmModel(randomId, currentUser.uid)
+        RealmHelper.placeOrder(order)
+
         for(cart in cartList){
-            val random = Random.nextInt(0, Int.MAX_VALUE)
-            val order = OrderRealmModel(random, cart.customerId)
             val orderDetails = OrderDetailsRealmModel(order.id, cart.productId)
-            RealmHelper.placeOrder(order, orderDetails)
+            RealmHelper.placeOrderDetails(orderDetails)
         }
         RealmHelper.deleteAllShoppingCartsByCustomerId(currentUser.uid)
     }
 
-    private fun placeOrderToBackend(){
+    private fun placeOrderToBackend(randomId: Int, ){
 
-        val random = Random.nextInt(0, Int.MAX_VALUE)
-        val order = OrderModel(random, currentUser.uid)
+        val order = OrderModel(randomId, currentUser.uid)
 
         val service = RetrofitService.create()
         val call = service.postOrderAndOrderDetailsCall(order.id, order.customerId, order.totalPrice)
@@ -112,23 +114,6 @@ class ShoppingCartActivity: AppCompatActivity() {
         })
     }
 
-    private fun deleteShoppingCartsByCustomerId(){
-        val service = RetrofitService.create()
-        val call = service.deleteShoppingCartsByCustomerIdCall(currentUser.uid)
-        call.enqueue(object : Callback<Unit?> {
-            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
-                if(response.isSuccessful) {
-                    Log.d("DELETE SHOPPING_CARTS SUCCESS", response.message())
-                } else {
-                    Log.d("DELETE SHOPPING_CARTS FAIL", response.message())
-                }
-            }
-            override fun onFailure(call: Call<Unit?>, t: Throwable) {
-                Log.d("DELETE SHOPPING_CARTS FAIL", t.message.toString())
-            }
-        })
-    }
-
     private fun getShoppingCartItemsByCustomerIdFromCache(customerId: String){
         val cartList = RealmHelper.getShoppingCartsByCustomerId(customerId)
         shoppingCartAdapter?.addItems(cartList)
@@ -141,7 +126,7 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.setCancelable(true)
         alert.setPositiveButton("Yes") { dialog, _ ->
             RealmHelper.deleteShoppingCartByCustomerIdAndProductId(customerId, productId)
-            deleteShoppingCartByProductIdAndCustomerIdFromBackend(customerId, productId)
+            deleteShoppingCartByCustomerIdAndProductIdFromBackend(customerId, productId)
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Wish removed from shopping cart!", Toast.LENGTH_SHORT).show()
         }
@@ -151,7 +136,7 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.show()
     }
 
-    private fun deleteShoppingCartByProductIdAndCustomerIdFromBackend(customerId: String, productId: Int){
+    private fun deleteShoppingCartByCustomerIdAndProductIdFromBackend(customerId: String, productId: Int){
         val service = RetrofitService.create()
         val call = service.deleteShoppingCartByCustomerIdAndProductIdCall(customerId, productId)
         call.enqueue(object : Callback<Unit?> {

@@ -12,6 +12,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.OrdersListAdapter
+import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
 class OrdersActivity: AppCompatActivity() {
 
@@ -34,6 +35,22 @@ class OrdersActivity: AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        getOrdersByCustomerId()
+    }
+
+    private fun getOrdersByCustomerId(){
+        getOrdersByCustomerIdFromCache()
+        getOrdersByCustomerIdFromBackend()
+    }
+
+    private fun getOrdersByCustomerIdFromCache(){
+        val ordersList = RealmHelper.getOrdersByCustomerId(currentUser.uid)
+        ordersAdapter?.addItems(ordersList)
+    }
+
+    private fun getOrdersByCustomerIdFromBackend(){
+
     }
 
     private fun initView(){
