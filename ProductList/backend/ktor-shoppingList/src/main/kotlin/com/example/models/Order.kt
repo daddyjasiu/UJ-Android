@@ -45,7 +45,7 @@ fun getOrderById(id : Int) : List<Order> {
 
 fun placeOrder(id: Int, customerId: String, totalPrice: Double) {
     transaction {
-        val customerCart = getShoppingCartByCustomerId(customerId)
+        val customerCart = getShoppingCartsByCustomerId(customerId)
         val orderId : Int
         if (customerCart.isNotEmpty()) {
             orderId = OrderTable.insert {

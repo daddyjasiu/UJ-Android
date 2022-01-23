@@ -32,7 +32,6 @@ fun Route.orderRouting() {
             call.respond(updateOrder(order))
         }
 
-        // adds new order
         post("/{order_id}/{customer_id}/{total_price}") {
             val orderId = call.parameters["order_id"]
             val customerId = call.parameters["customer_id"]

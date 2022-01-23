@@ -7,11 +7,9 @@ import android.widget.Button
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
 import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
-class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCartViewHolder>() {
+class ShoppingCartListAdapter: RecyclerView.Adapter<ShoppingCartListAdapter.ShoppingCartViewHolder>() {
     private var cartsList: List<ShoppingCartRealmModel> = emptyList()
     private var onClickItem: ((ShoppingCartRealmModel) -> Unit)? = null
     private var onClickDeleteButton: ((ShoppingCartRealmModel) -> Unit)? = null
@@ -30,7 +28,7 @@ class ShoppingCartAdapter: RecyclerView.Adapter<ShoppingCartAdapter.ShoppingCart
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ShoppingCartViewHolder (
-        LayoutInflater.from(parent.context).inflate(R.layout.fragment_shopping_cart_item, parent, false)
+        LayoutInflater.from(parent.context).inflate(R.layout.fragment_shopping_cart_list_item, parent, false)
     )
 
     override fun onBindViewHolder(holder: ShoppingCartViewHolder, position: Int) {

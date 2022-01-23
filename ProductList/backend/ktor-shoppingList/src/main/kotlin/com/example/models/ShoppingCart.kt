@@ -35,7 +35,7 @@ fun getAllShoppingCarts() : List<ShoppingCart> {
     }
 }
 
-fun getShoppingCartByCustomerId(customerId : String) : List<ShoppingCart> {
+fun getShoppingCartsByCustomerId(customerId : String) : List<ShoppingCart> {
     return transaction {
         ShoppingCartTable.select { ShoppingCartTable.customerId eq customerId }.map { it.toShoppingCart() }
     }

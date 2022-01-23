@@ -9,16 +9,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.adapters.ShoppingCartAdapter
-import pl.edu.uj.ii.skwarczek.productlist.models.OrderDetailsRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.models.OrderRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
+import pl.edu.uj.ii.skwarczek.productlist.adapters.ShoppingCartListAdapter
+import pl.edu.uj.ii.skwarczek.productlist.models.*
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import retrofit2.Call
@@ -30,7 +27,7 @@ class ShoppingCartActivity: AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var cartRecyclerView: RecyclerView
-    private var shoppingCartAdapter: ShoppingCartAdapter? = null
+    private var shoppingCartAdapter: ShoppingCartListAdapter? = null
     private lateinit var backArrowButton: Button
     private lateinit var goToOrdersButton: Button
     private lateinit var placeOrderButton: Button
@@ -55,7 +52,8 @@ class ShoppingCartActivity: AppCompatActivity() {
         }
 
         goToOrdersButton.setOnClickListener {
-            //TODO intent to activity with orders
+            val intent = Intent(this, OrdersActivity::class.java)
+            startActivity(intent)
         }
 
         shoppingCartAdapter?.setOnClickDeleteButton {
@@ -73,7 +71,7 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.setPositiveButton("Yes") { dialog, _ ->
             val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
             placeOrderToCache(cartList)
-            placeOrderToBackend(cartList)
+            placeOrderToBackend()
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
         }
@@ -84,18 +82,51 @@ class ShoppingCartActivity: AppCompatActivity() {
     }
 
     private fun placeOrderToCache(cartList: List<ShoppingCartRealmModel>){
-        RealmHelper.deleteAllShoppingCartsByCustomerId(currentUser.uid)
-
         for(cart in cartList){
             val random = Random.nextInt(0, Int.MAX_VALUE)
             val order = OrderRealmModel(random, cart.customerId)
             val orderDetails = OrderDetailsRealmModel(order.id, cart.productId)
             RealmHelper.placeOrder(order, orderDetails)
         }
+        RealmHelper.deleteAllShoppingCartsByCustomerId(currentUser.uid)
     }
 
-    private fun placeOrderToBackend(cartList: List<ShoppingCartRealmModel>){
+    private fun placeOrderToBackend(){
 
+        val random = Random.nextInt(0, Int.MAX_VALUE)
+        val order = OrderModel(random, currentUser.uid)
+
+        val service = RetrofitService.create()
+        val call = service.postOrderAndOrderDetailsCall(order.id, order.customerId, order.totalPrice)
+        call.enqueue(object : Callback<Unit?> {
+            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
+                if(response.isSuccessful) {
+                    Log.d("PLACE ORDER SUCCESS", response.message())
+                } else {
+                    Log.d("PLACE ORDER FAIL", response.message())
+                }
+            }
+            override fun onFailure(call: Call<Unit?>, t: Throwable) {
+                Log.d("PLACE ORDER FAIL", t.message.toString())
+            }
+        })
+    }
+
+    private fun deleteShoppingCartsByCustomerId(){
+        val service = RetrofitService.create()
+        val call = service.deleteShoppingCartsByCustomerIdCall(currentUser.uid)
+        call.enqueue(object : Callback<Unit?> {
+            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
+                if(response.isSuccessful) {
+                    Log.d("DELETE SHOPPING_CARTS SUCCESS", response.message())
+                } else {
+                    Log.d("DELETE SHOPPING_CARTS FAIL", response.message())
+                }
+            }
+            override fun onFailure(call: Call<Unit?>, t: Throwable) {
+                Log.d("DELETE SHOPPING_CARTS FAIL", t.message.toString())
+            }
+        })
     }
 
     private fun getShoppingCartItemsByCustomerIdFromCache(customerId: String){
@@ -150,7 +181,7 @@ class ShoppingCartActivity: AppCompatActivity() {
 
     private fun initRecyclerView(){
         cartRecyclerView.layoutManager = LinearLayoutManager(this)
-        shoppingCartAdapter = ShoppingCartAdapter()
+        shoppingCartAdapter = ShoppingCartListAdapter()
         cartRecyclerView.adapter = shoppingCartAdapter
     }
 

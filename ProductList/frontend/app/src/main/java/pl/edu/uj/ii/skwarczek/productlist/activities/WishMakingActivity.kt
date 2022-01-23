@@ -14,16 +14,13 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
-import pl.edu.uj.ii.skwarczek.productlist.models.ProductModel
-import pl.edu.uj.ii.skwarczek.productlist.models.ProductRealmModel
-import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartModel
+import pl.edu.uj.ii.skwarczek.productlist.models.*
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import kotlin.random.Random
-import pl.edu.uj.ii.skwarczek.productlist.models.ShoppingCartRealmModel
 
 class WishMakingActivity : AppCompatActivity() {
 

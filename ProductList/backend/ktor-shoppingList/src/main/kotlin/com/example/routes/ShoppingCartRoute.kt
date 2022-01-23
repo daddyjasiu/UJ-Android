@@ -1,7 +1,6 @@
 package com.example.routes
 
 import io.ktor.application.*
-import io.ktor.http.*
 import io.ktor.request.*
 import io.ktor.response.*
 import io.ktor.routing.*
@@ -19,7 +18,7 @@ fun Route.shoppingCartRouting() {
         get("/{customer_id}") {
             val customerId = call.parameters["customer_id"]
             if(customerId != null) {
-                call.respond(getShoppingCartByCustomerId(customerId.toString()))
+                call.respond(getShoppingCartsByCustomerId(customerId.toString()))
             }
         }
 

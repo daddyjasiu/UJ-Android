@@ -4,12 +4,6 @@ import io.realm.Realm
 
 import io.realm.RealmResults
 import pl.edu.uj.ii.skwarczek.productlist.models.*
-import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 object RealmHelper {
 

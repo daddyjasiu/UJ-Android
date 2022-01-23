@@ -69,7 +69,7 @@ interface RetrofitService {
     fun deleteShoppingCartByCustomerIdAndProductIdCall(@Path("customerId") customerId: String, @Path("productId") productId: Int) : Call<Unit>
 
     @DELETE("cart/{customerId}")
-    fun deleteShoppingCartByCustomerIdCall(@Path("customerId") customerId: String) : Call<Unit>
+    fun deleteShoppingCartsByCustomerIdCall(@Path("customerId") customerId: String) : Call<Unit>
 
     @DELETE("cart")
     fun deleteAllShoppingCarts() : Call<Unit>
@@ -81,8 +81,8 @@ interface RetrofitService {
     @GET("order/customer/{customerId}")
     fun getCustomerOrdersCall(@Path("customerId") customerId: String) : Call<List<OrderModel>>
 
-    @POST("order/{customerId}")
-    fun postCustomerOrderCall(@Path("customerId") customerId: String) : Call<Unit>
+    @POST("order/{orderId}/{customerId}/{totalPrice}")
+    fun postOrderAndOrderDetailsCall(@Path("orderId") orderId: Int, @Path("customerId") customerId: String, @Path("totalPrice") totalPrice: Double) : Call<Unit>
 
     @DELETE("order/{id}")
     fun deleteOrderByIdCall(@Path("id") orderId: Int) : Call<Unit>
@@ -100,7 +100,7 @@ interface RetrofitService {
 
     companion object {
 
-        var BASE_URL = "https://e2bc-185-58-160-75.ngrok.io"
+        var BASE_URL = "https://a02e-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 
