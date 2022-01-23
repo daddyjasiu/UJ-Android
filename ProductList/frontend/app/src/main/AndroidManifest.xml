@@ -3,6 +3,7 @@
     package="pl.edu.uj.ii.skwarczek.productlist">
     <uses-permission android:name="android.permission.INTERNET" />
     <application
+        android:usesCleartextTraffic="false"
         android:name=".utility.InitRealm"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

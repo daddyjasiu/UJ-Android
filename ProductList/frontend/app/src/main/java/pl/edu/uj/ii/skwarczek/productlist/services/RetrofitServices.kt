@@ -90,9 +90,6 @@ interface RetrofitService {
     @DELETE("order")
     fun deleteAllOrders() : Call<Unit>
 
-    @GET("order/create-payment-intent/{customer_id}")
-    fun createPaymentIntentCall(@Path("customer_id") customerId: String) : Call<String>
-
     //    Order details
     @GET("orderDetails/{orderId}")
     fun getOrderDetailsByIdCall(@Path("orderId") orderId : Int) : Call<List<OrderDetailsModel>>
