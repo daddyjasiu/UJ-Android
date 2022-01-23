@@ -42,34 +42,54 @@ fun getProductByCustomerId(customerId : String) : List<Product> {
 
 fun addProduct(product: Product) {
     transaction {
-        ProductTable.insert {
-            it[id] = product.id
-            it[customerId] = product.customerId
-            it[name] = product.name
-            it[description] = product.description
+        try{
+            ProductTable.insert {
+                it[id] = product.id
+                it[customerId] = product.customerId
+                it[name] = product.name
+                it[description] = product.description
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun updateProduct(product: Product) {
     transaction {
-        ProductTable.update({ ProductTable.id eq product.id }) {
-            it[id] = product.id
-            it[customerId] = product.customerId
-            it[name] = product.name
-            it[description] = product.description
+        try{
+            ProductTable.update({ ProductTable.id eq product.id }) {
+                it[id] = product.id
+                it[customerId] = product.customerId
+                it[name] = product.name
+                it[description] = product.description
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun deleteAllProducts() {
     transaction {
-        ProductTable.deleteAll()
+        try{
+            ProductTable.deleteAll()
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 
 fun deleteProductByProductIdAndCustomerId(customerId: String, productId: Int) {
     transaction {
-        ProductTable.deleteWhere {(ProductTable.customerId eq customerId) and (ProductTable.id eq productId) }
+        try{
+            ProductTable.deleteWhere {(ProductTable.customerId eq customerId) and (ProductTable.id eq productId) }
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }

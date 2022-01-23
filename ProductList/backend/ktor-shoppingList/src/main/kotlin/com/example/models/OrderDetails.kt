@@ -34,17 +34,27 @@ fun getOrderDetailsByOrderId(orderId : Int) : List<OrderDetails> {
 
 fun insertOrderDetailsRow(orderId: Int, productId: Int) {
     transaction {
-        OrderDetailsTable.insert {
-            it[OrderDetailsTable.orderId] = orderId
-            it[OrderDetailsTable.productId] = productId
+        try{
+            OrderDetailsTable.insert {
+                it[OrderDetailsTable.orderId] = orderId
+                it[OrderDetailsTable.productId] = productId
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun deleteOrderDetailsByOrderId(orderId : Int) {
     transaction {
-        OrderDetailsTable.deleteWhere {
-            OrderDetailsTable.orderId eq orderId
+        try{
+            OrderDetailsTable.deleteWhere {
+                OrderDetailsTable.orderId eq orderId
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }

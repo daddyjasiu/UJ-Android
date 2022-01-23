@@ -51,36 +51,56 @@ fun getCustomerByEmailAndPassword(email: String, password: String) : Customer?{
 
 fun addCustomer(customer : Customer) {
     transaction {
-        CustomerTable.insert {
-            it[id] = customer.id
-            it[firstName] = customer.firstName
-            it[lastName] = customer.lastName
-            it[email] = customer.email
-            it[password] = customer.password
+        try{
+            CustomerTable.insert {
+                it[id] = customer.id
+                it[firstName] = customer.firstName
+                it[lastName] = customer.lastName
+                it[email] = customer.email
+                it[password] = customer.password
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun updateCustomer(customer : Customer) {
     transaction {
-        CustomerTable.update({ CustomerTable.id eq customer.id }) {
-            it[id] = customer.id
-            it[firstName] = customer.firstName
-            it[lastName] = customer.lastName
-            it[email] = customer.email
-            it[password] = customer.password
+        try{
+            CustomerTable.update({ CustomerTable.id eq customer.id }) {
+                it[id] = customer.id
+                it[firstName] = customer.firstName
+                it[lastName] = customer.lastName
+                it[email] = customer.email
+                it[password] = customer.password
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun deleteAllCustomers() {
     transaction {
-        CustomerTable.deleteAll()
+        try{
+            CustomerTable.deleteAll()
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 
 fun deleteCustomerById(id: String) {
     transaction {
-        CustomerTable.deleteWhere { CustomerTable.id eq id }
+        try{
+            CustomerTable.deleteWhere { CustomerTable.id eq id }
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }

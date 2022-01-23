@@ -17,6 +17,7 @@ import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ShoppingCartListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
+import pl.edu.uj.ii.skwarczek.productlist.utility.BackendHelper
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import retrofit2.Call
 import retrofit2.Callback
@@ -84,7 +85,7 @@ class ShoppingCartActivity: AppCompatActivity() {
             val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
             val randomId = Random.nextInt(0, Int.MAX_VALUE)
             placeOrderToCache(randomId, cartList)
-            placeOrderToBackend(randomId)
+            BackendHelper.placeOrderToBackend(randomId, currentUser.uid)
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
         }
@@ -106,26 +107,6 @@ class ShoppingCartActivity: AppCompatActivity() {
         RealmHelper.deleteAllShoppingCartsByCustomerId(currentUser.uid)
     }
 
-    private fun placeOrderToBackend(randomId: Int, ){
-
-        val order = OrderModel(randomId, currentUser.uid)
-
-        val service = RetrofitService.create()
-        val call = service.postOrderAndOrderDetailsCall(order.id, order.customerId, order.totalPrice)
-        call.enqueue(object : Callback<Unit?> {
-            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
-                if(response.isSuccessful) {
-                    Log.d("PLACE ORDER SUCCESS", response.message())
-                } else {
-                    Log.d("PLACE ORDER FAIL", response.message())
-                }
-            }
-            override fun onFailure(call: Call<Unit?>, t: Throwable) {
-                Log.d("PLACE ORDER FAIL", t.message.toString())
-            }
-        })
-    }
-
     private fun getShoppingCartItemsByCustomerIdFromCache(customerId: String){
         val cartList = RealmHelper.getShoppingCartsByCustomerId(customerId)
         shoppingCartAdapter?.addItems(cartList)
@@ -136,9 +117,9 @@ class ShoppingCartActivity: AppCompatActivity() {
         val alert = AlertDialog.Builder(this)
         alert.setMessage("Are you sure you want to delete this wish from your shopping cart? \n\nIt will be lost forever!")
         alert.setCancelable(true)
-        alert.setPositiveButton("Yes") { dialog, _ ->
+        alert.setPositiveButton("Yes") { _, _ ->
             RealmHelper.deleteShoppingCartByCustomerIdAndProductId(customerId, productId)
-            deleteShoppingCartByCustomerIdAndProductIdFromBackend(customerId, productId)
+            BackendHelper.deleteShoppingCartByCustomerIdAndProductIdFromBackend(customerId, productId)
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Wish removed from shopping cart!", Toast.LENGTH_SHORT).show()
         }
@@ -146,25 +127,6 @@ class ShoppingCartActivity: AppCompatActivity() {
             dialog.dismiss()
         }
         alert.show()
-    }
-
-    private fun deleteShoppingCartByCustomerIdAndProductIdFromBackend(customerId: String, productId: Int){
-        val service = RetrofitService.create()
-        val call = service.deleteShoppingCartByCustomerIdAndProductIdCall(customerId, productId)
-        call.enqueue(object : Callback<Unit?> {
-            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
-                if(response.isSuccessful) {
-                    Log.d("DELETE CART SUCCESS", response.message())
-                    Toast.makeText(applicationContext, "Wish added to cart!", Toast.LENGTH_SHORT).show()
-                } else {
-                    Log.d("DELETE CART FAIL", response.message())
-                }
-            }
-
-            override fun onFailure(call: Call<Unit?>, t: Throwable) {
-                Log.d("DELETE CART FAIL", t.message.toString())
-            }
-        })
     }
 
     private fun initView(){

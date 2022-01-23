@@ -19,6 +19,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.SignInAdapter
+import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
 class SignInActivity : AppCompatActivity() {
 

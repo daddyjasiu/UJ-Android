@@ -1,13 +1,26 @@
 package pl.edu.uj.ii.skwarczek.productlist.utility
 
+import android.util.Log
+import com.google.firebase.auth.FirebaseUser
 import io.realm.Realm
 
 import io.realm.RealmResults
+import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
+import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import java.lang.Exception
 
 object RealmHelper {
 
     private var realm: Realm = Realm.getDefaultInstance()
+
+    private var productListBackend: List<ProductModel> = listOf()
+    private var shoppingCartListBackend: List<ShoppingCartModel> = listOf()
+    private var orderListBackend: List<OrderModel> = listOf()
+    private var orderDetailsListBackend: List<OrderDetailsModel> = listOf()
 
     fun clearDB(){
         realm.beginTransaction()
@@ -15,15 +28,25 @@ object RealmHelper {
         realm.commitTransaction()
     }
 
+    fun getEverything(){
+        val sth = Realm.getDefaultInstance()
+            .where(ProductRealmModel::class.java)
+            .findAll()
+
+        for (i in sth){
+            println(i.id)
+        }
+    }
+
     fun addShoppingCart(cart: ShoppingCartRealmModel){
-
-        realm.executeTransactionAsync(Realm.Transaction { bgRealm ->
-            bgRealm.insert(cart)
-
-        }, Realm.Transaction.OnSuccess {
-            println("Cart added to local Realm database with credentials:")
-            println("PRODUCT_ID: ${cart.productId}, CUSTOMER_ID: ${cart.customerId}")
-        })
+        realm.executeTransaction { bgRealm ->
+            try{
+                bgRealm.insert(cart)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
+        }
     }
 
     fun getShoppingCartsByCustomerId(customerId: String): List<ShoppingCartRealmModel>{
@@ -58,7 +81,12 @@ object RealmHelper {
 
     fun addProduct(product: ProductRealmModel){
         realm.executeTransaction { bgRealm ->
-            bgRealm.insert(product)
+            try {
+                bgRealm.insert(product)
+            }
+            catch(e: Exception){
+                print(e.message)
+            }
         }
     }
 
@@ -69,7 +97,7 @@ object RealmHelper {
             .findFirst()
     }
 
-    fun getAllProductsByCustomerId(customerId: String): MutableList<ProductRealmModel> {
+    fun getAllProductsByCustomerId(customerId: String): List<ProductRealmModel> {
 
         return Realm.getDefaultInstance()
             .where(ProductRealmModel::class.java)
@@ -87,18 +115,27 @@ object RealmHelper {
                     .findAll()
             rows.deleteAllFromRealm()
         }
-
     }
 
     fun placeOrder(order: OrderRealmModel){
         realm.executeTransaction { bgRealm ->
-            bgRealm.insert(order)
+            try{
+                bgRealm.insert(order)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
         }
     }
 
     fun placeOrderDetails(orderDetails: OrderDetailsRealmModel){
         realm.executeTransaction { bgRealm ->
-            bgRealm.insert(orderDetails)
+            try{
+                bgRealm.insert(orderDetails)
+            }
+            catch(e: Exception){
+                println(e.message)
+            }
         }
     }
 
@@ -107,6 +144,44 @@ object RealmHelper {
             .where(OrderRealmModel::class.java)
             .equalTo("customerId", customerId)
             .findAll()
+    }
+
+    fun syncDatabases(customerId: String){
+        //Syncing Products
+        var productListCache = getAllProductsByCustomerId(customerId)
+        getAllProductsByCustomerIdFromBackend(customerId)
+        val productListCacheCount = productListCache.count()
+        val productListBackendCount = productListBackend.count()
+
+        if(productListCacheCount != productListBackendCount){
+            if(productListCacheCount < productListBackendCount){
+                for(product in productListBackend){
+                    val p = ProductRealmModel(product.id, product.customerId, product.name, product.description)
+                    addProduct(p)
+                }
+            }
+            else if(productListCacheCount > productListBackendCount){
+                for(product in productListCache){
+                    val p = ProductModel(product.id, product.customerId, product.name, product.description)
+                    BackendHelper.addProductToBackend(p)
+                }
+            }
+        }
+
+        Globals.set(false)
+    }
+
+    private fun getAllProductsByCustomerIdFromBackend(customerId: String){
+        val service = RetrofitService.create()
+        val call = service.getProductsByCustomerIdCall(customerId)
+        call.enqueue(object : Callback<List<ProductModel>> {
+            override fun onResponse(call: Call<List<ProductModel>>, response: Response<List<ProductModel>>) {
+                productListBackend = response.body()!!
+            }
+            override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
+
+            }
+        })
     }
 
 }

@@ -45,42 +45,58 @@ fun getOrderById(id : Int) : List<Order> {
 
 fun placeOrder(id: Int, customerId: String, totalPrice: Double) {
     transaction {
-        val customerCart = getShoppingCartsByCustomerId(customerId)
-        val orderId : Int
-        if (customerCart.isNotEmpty()) {
-            orderId = OrderTable.insert {
-                it[OrderTable.id] = id
-                it[OrderTable.customerId] = customerId
-                it[OrderTable.totalPrice] = totalPrice
-            } get OrderTable.id
+        try {
+            val customerCart = getShoppingCartsByCustomerId(customerId)
 
-            for(cart in customerCart) {
-                insertOrderDetailsRow(orderId, cart.productId)
+            val orderId: Int
+            if (customerCart.isNotEmpty()) {
+                orderId = OrderTable.insert {
+                    it[OrderTable.id] = id
+                    it[OrderTable.customerId] = customerId
+                    it[OrderTable.totalPrice] = totalPrice
+                } get OrderTable.id
+
+                for (cart in customerCart) {
+                    insertOrderDetailsRow(orderId, cart.productId)
+                }
+
+                // after placing an order delete all products from cart
+                deleteShoppingCartByCustomerId(customerId)
+
+            } else {
+                // TODO empty cart
             }
-
-            // after placing an order delete all products from cart
-            deleteShoppingCartByCustomerId(customerId)
-
-        } else {
-            // TODO empty cart
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun updateOrder(order: Order){
     transaction {
-        OrderTable.update({ ProductTable.id eq order.id }) {
-            it[id] = order.id
-            it[customerId] = order.customerId
-            it[totalPrice] = order.totalPrice
+        try{
+            OrderTable.update({ ProductTable.id eq order.id }) {
+                it[id] = order.id
+                it[customerId] = order.customerId
+                it[totalPrice] = order.totalPrice
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun deleteOrder(orderId : Int) {
     transaction {
-        OrderTable.deleteWhere { OrderTable.id eq orderId }
-        deleteOrderDetailsByOrderId(orderId)
+        try {
+            OrderTable.deleteWhere { OrderTable.id eq orderId }
+            deleteOrderDetailsByOrderId(orderId)
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 

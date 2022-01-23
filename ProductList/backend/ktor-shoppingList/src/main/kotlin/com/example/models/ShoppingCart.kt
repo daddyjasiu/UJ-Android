@@ -42,39 +42,64 @@ fun getShoppingCartsByCustomerId(customerId : String) : List<ShoppingCart> {
 
 fun addShoppingCart(shoppingCart: ShoppingCart) {
     transaction {
-        ShoppingCartTable.insert {
-            it[customerId] = shoppingCart.customerId
-            it[productId] = shoppingCart.productId
-            it[productName] = shoppingCart.productName
-            it[productDescription] = shoppingCart.productDescription
+        try{
+            ShoppingCartTable.insert {
+                it[customerId] = shoppingCart.customerId
+                it[productId] = shoppingCart.productId
+                it[productName] = shoppingCart.productName
+                it[productDescription] = shoppingCart.productDescription
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun updateShoppingCart(cart: ShoppingCart) {
     transaction {
-        ProductTable.update({ ShoppingCartTable.customerId eq cart.customerId }) {
-            it[ShoppingCartTable.productName] = cart.productName
-            it[ShoppingCartTable.productDescription] = cart.productDescription
+        try{
+            ProductTable.update({ ShoppingCartTable.customerId eq cart.customerId }) {
+                it[ShoppingCartTable.productName] = cart.productName
+                it[ShoppingCartTable.productDescription] = cart.productDescription
+            }
+        }
+        catch (e: Exception){
+            println(e.message)
         }
     }
 }
 
 fun deleteShoppingCartByCustomerId(customerId: String) {
     transaction {
-        ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId }
+        try{
+            ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId }
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 
 fun deleteShoppingCartByCustomerIdAndProductId(customerId: String, productId: Int) {
     transaction {
-        ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId and (ShoppingCartTable.productId eq productId) }
+        try{
+            ShoppingCartTable.deleteWhere { ShoppingCartTable.customerId eq customerId and (ShoppingCartTable.productId eq productId) }
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 
 fun deleteAllShoppingCarts() {
     transaction {
-        ShoppingCartTable.deleteAll()
+        try{
+            ShoppingCartTable.deleteAll()
+        }
+        catch (e: Exception){
+            println(e.message)
+        }
     }
 }
 

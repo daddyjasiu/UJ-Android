@@ -1,6 +1,7 @@
 package pl.edu.uj.ii.skwarczek.productlist.models
 
 import io.realm.RealmObject
+import io.realm.annotations.PrimaryKey
 
 data class ShoppingCartModel(
     var customerId: String = "",

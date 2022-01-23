@@ -2,7 +2,6 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -15,11 +14,9 @@ import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
-import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
+import pl.edu.uj.ii.skwarczek.productlist.utility.BackendHelper
+import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
 class WishMakingActivity : AppCompatActivity() {
@@ -41,7 +38,7 @@ class WishMakingActivity : AppCompatActivity() {
         initView()
         initRecyclerView()
 
-        getProductsByCustomerIdFromCache(currentUser.uid)
+        RealmHelper.syncDatabases(currentUser.uid)
 
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -60,8 +57,8 @@ class WishMakingActivity : AppCompatActivity() {
                 val productRealm = ProductRealmModel(random, currentUser.uid, name, description)
                 val productBackend = ProductModel(random, currentUser.uid, name, description)
 
-                addProductToCache(productRealm)
-                addProductToBackend(productBackend)
+                RealmHelper.addProduct(productRealm)
+                BackendHelper.addProductToBackend(productBackend)
                 getProductsByCustomerIdFromCache(currentUser.uid)
                 clearEditText()
             }
@@ -88,51 +85,13 @@ class WishMakingActivity : AppCompatActivity() {
         productAdapter?.setOnClickDeleteButton {
             deleteProduct(it.id, currentUser.uid, true)
         }
-    }
 
-    private fun addProductToCache(product: ProductRealmModel) {
-        RealmHelper.addProduct(product)
-    }
-
-    private fun addProductToBackend(product: ProductModel){
-
-        val service = RetrofitService.create()
-        val call = service.postProductCall(product)
-        call.enqueue(object : Callback<Unit> {
-            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                if(response.isSuccessful) {
-                    Log.d("POST PRODUCT SUCCESS", response.message())
-                } else {
-                    Log.d("POST PRODUCT FAIL", response.message())
-                }
-            }
-            override fun onFailure(call: Call<Unit>, t: Throwable) {
-                Log.d("POST PRODUCT FAIL", t.message.toString())
-            }
-        })
-    }
-
-    private fun addShoppingCartToBackend(shoppingCart: ShoppingCartModel){
-
-        val service = RetrofitService.create()
-        val call = service.postShoppingCartCall(shoppingCart)
-        call.enqueue(object : Callback<Unit> {
-            override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
-                if(response.isSuccessful) {
-                    Log.d("POST SHOPPING_CART SUCCESS", response.message())
-                } else {
-                    Log.d("POST SHOPPING_CART FAIL", response.message())
-                }
-            }
-            override fun onFailure(call: Call<Unit>, t: Throwable) {
-                Log.d("POST SHOPPING_CART FAIL", t.message.toString())
-            }
-        })
+        getProductsByCustomerIdFromCache(currentUser.uid)
     }
 
     private fun addProductToCart(product: ProductRealmModel){
         RealmHelper.addShoppingCart(ShoppingCartRealmModel(product.customerId, product.id, product.name, product.description))
-        addShoppingCartToBackend(ShoppingCartModel(product.customerId, product.id, product.name, product.description))
+        BackendHelper.addShoppingCartToBackend(ShoppingCartModel(product.customerId, product.id, product.name, product.description))
         deleteProduct(product.id, product.customerId, false)
 
         Toast.makeText(this, "Product added to shopping cart!", Toast.LENGTH_SHORT).show()
@@ -147,16 +106,16 @@ class WishMakingActivity : AppCompatActivity() {
 
         if(!showAlert){
             RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)
-            deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
+            BackendHelper.deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
             getProductsByCustomerIdFromCache(customerId)
         }
         else{
             val alert = AlertDialog.Builder(this)
             alert.setMessage("Are you sure you want to delete this wish?")
             alert.setCancelable(true)
-            alert.setPositiveButton("Yes") { dialog, _ ->
+            alert.setPositiveButton("Yes") { _, _ ->
                 RealmHelper.deleteProductByProductIdAndCustomerId(productId, customerId)
-                deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
+                BackendHelper.deleteProductByProductIdAndCustomerIdFromBackend(productId, customerId)
                 getProductsByCustomerIdFromCache(customerId)
                 Toast.makeText(this, "Wish removed!", Toast.LENGTH_SHORT).show()
             }
@@ -165,24 +124,6 @@ class WishMakingActivity : AppCompatActivity() {
             }
             alert.show()
         }
-    }
-
-    private fun deleteProductByProductIdAndCustomerIdFromBackend(productId: Int, customerId: String){
-        val service = RetrofitService.create()
-        val call = service.deleteProductByCustomerIdAndProductIdCall(customerId, productId)
-        call.enqueue(object : Callback<Unit?> {
-            override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
-                if(response.isSuccessful) {
-                    Log.d("DELETE PRODUCT SUCCESS", response.message())
-                } else {
-                    Log.d("DELETE PRODUCT FAIL", response.message())
-                }
-            }
-
-            override fun onFailure(call: Call<Unit?>, t: Throwable) {
-                Log.d("DELETE PRODUCT FAIL", t.message.toString())
-            }
-        })
     }
 
     private fun goToShoppingCart() {
