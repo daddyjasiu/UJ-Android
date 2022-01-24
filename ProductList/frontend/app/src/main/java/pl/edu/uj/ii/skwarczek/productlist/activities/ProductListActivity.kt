@@ -19,7 +19,7 @@ import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import kotlin.random.Random
 
-class WishMakingActivity : AppCompatActivity() {
+class ProductListActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var wishName: EditText
@@ -99,6 +99,11 @@ class WishMakingActivity : AppCompatActivity() {
 
     private fun getProductsByCustomerIdFromCache(customerId: String){
         val productList = RealmHelper.getAllProductsByCustomerId(customerId)
+
+        for(product in productList){
+            println(product.name)
+        }
+
         productAdapter?.addItems(ArrayList(productList))
     }
 

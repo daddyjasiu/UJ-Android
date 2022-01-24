@@ -42,6 +42,9 @@ class OrdersActivity: AppCompatActivity() {
     private fun getOrdersByCustomerId(){
         getOrdersByCustomerIdFromCache()
         BackendHelper.getOrdersByCustomerIdFromBackend()
+
+
+
     }
 
     private fun getOrdersByCustomerIdFromCache(){

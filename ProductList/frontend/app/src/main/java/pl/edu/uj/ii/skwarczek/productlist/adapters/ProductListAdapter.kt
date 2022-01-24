@@ -18,6 +18,7 @@ class ProductListAdapter : RecyclerView.Adapter<ProductListAdapter.ProductViewHo
     private var onClickDeleteButton: ((ProductRealmModel) -> Unit)? = null
 
     fun addItems(items: ArrayList<ProductRealmModel>){
+        this.productsRealmList.clear()
         this.productsRealmList = items
         notifyDataSetChanged()
     }

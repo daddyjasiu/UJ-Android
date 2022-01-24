@@ -65,9 +65,9 @@ object BackendHelper {
         })
     }
 
-    fun placeOrderToBackend(randomId: Int, customerId: String){
+    fun placeOrderToBackend(randomId: Int, customerId: String, totalPrice: Double){
 
-        val order = OrderModel(randomId, customerId)
+        val order = OrderModel(randomId, customerId, totalPrice)
 
         val service = RetrofitService.create()
         val call = service.postOrderAndOrderDetailsCall(order.id, order.customerId, order.totalPrice)
@@ -104,7 +104,7 @@ object BackendHelper {
     }
 
     fun getOrdersByCustomerIdFromBackend(){
-
+        
     }
 
 }

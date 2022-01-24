@@ -20,7 +20,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.WishMakingActivity"
+        <activity android:name=".activities.ProductListActivity"
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.SettingsActivity"
             android:windowSoftInputMode="adjustPan"/>

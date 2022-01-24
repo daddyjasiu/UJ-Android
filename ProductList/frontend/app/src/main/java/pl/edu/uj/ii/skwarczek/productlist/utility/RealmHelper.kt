@@ -1,11 +1,8 @@
 package pl.edu.uj.ii.skwarczek.productlist.utility
 
-import android.util.Log
-import com.google.firebase.auth.FirebaseUser
 import io.realm.Realm
 
 import io.realm.RealmResults
-import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import retrofit2.Call
@@ -83,6 +80,7 @@ object RealmHelper {
         realm.executeTransaction { bgRealm ->
             try {
                 bgRealm.insert(product)
+                println(product.name + "inserted!")
             }
             catch(e: Exception){
                 print(e.message)
@@ -148,7 +146,7 @@ object RealmHelper {
 
     fun syncDatabases(customerId: String){
         //Syncing Products
-        var productListCache = getAllProductsByCustomerId(customerId)
+        val productListCache = getAllProductsByCustomerId(customerId)
         getAllProductsByCustomerIdFromBackend(customerId)
         val productListCacheCount = productListCache.count()
         val productListBackendCount = productListBackend.count()
@@ -168,7 +166,48 @@ object RealmHelper {
             }
         }
 
-        Globals.set(false)
+        //Syncing ShoppingCarts
+        val shoppingCartListCache = getShoppingCartsByCustomerId(customerId)
+        getAllShoppingCartsByCustomerIdFromBackend(customerId)
+        val shoppingCartListCacheCount = shoppingCartListCache.count()
+        val shoppingCartListBackendCount = shoppingCartListBackend.count()
+
+        if(shoppingCartListCacheCount != shoppingCartListBackendCount){
+            if(shoppingCartListCacheCount < shoppingCartListBackendCount){
+                for(cart in shoppingCartListBackend){
+                    val c = ShoppingCartRealmModel(cart.customerId, cart.productId, cart.productName, cart.productDescription)
+                    addShoppingCart(c)
+                }
+            }
+            else if(shoppingCartListCacheCount > shoppingCartListBackendCount){
+                for(cart in shoppingCartListCache){
+                    val c = ShoppingCartModel(cart.customerId, cart.productId, cart.productName, cart.productDescription)
+                    BackendHelper.addShoppingCartToBackend(c)
+                }
+            }
+        }
+
+        //Syncing Orders
+        val orderListCache = getOrdersByCustomerId(customerId)
+        getAllOrdersByCustomerIdFromBackend(customerId)
+        val orderListCacheCount = orderListCache.count()
+        val orderListBackendCount = orderListBackend.count()
+
+        if(orderListCacheCount != orderListBackendCount){
+            if(orderListCacheCount < orderListBackendCount){
+                for(order in orderListBackend){
+                    val o = OrderRealmModel(order.id, order.customerId, order.totalPrice)
+                    placeOrder(o)
+                }
+            }
+            else if(orderListCacheCount > orderListBackendCount){
+                for(order in orderListCache){
+                    val o = OrderModel(order.id, order.customerId, order.totalPrice)
+                    BackendHelper.placeOrderToBackend(o.id, o.customerId, o.totalPrice)
+                }
+            }
+        }
+
     }
 
     private fun getAllProductsByCustomerIdFromBackend(customerId: String){
@@ -179,6 +218,32 @@ object RealmHelper {
                 productListBackend = response.body()!!
             }
             override fun onFailure(call: Call<List<ProductModel>>, t: Throwable) {
+
+            }
+        })
+    }
+
+    private fun getAllShoppingCartsByCustomerIdFromBackend(customerId: String){
+        val service = RetrofitService.create()
+        val call = service.getShoppingCartsByCustomerIdCall(customerId)
+        call.enqueue(object : Callback<List<ShoppingCartModel>> {
+            override fun onResponse(call: Call<List<ShoppingCartModel>>, response: Response<List<ShoppingCartModel>>) {
+                shoppingCartListBackend = response.body()!!
+            }
+            override fun onFailure(call: Call<List<ShoppingCartModel>>, t: Throwable) {
+
+            }
+        })
+    }
+
+    private fun getAllOrdersByCustomerIdFromBackend(customerId: String){
+        val service = RetrofitService.create()
+        val call = service.getOrdersByCustomerIdCall(customerId)
+        call.enqueue(object : Callback<List<OrderModel>> {
+            override fun onResponse(call: Call<List<OrderModel>>, response: Response<List<OrderModel>>) {
+                orderListBackend = response.body()!!
+            }
+            override fun onFailure(call: Call<List<OrderModel>>, t: Throwable) {
 
             }
         })

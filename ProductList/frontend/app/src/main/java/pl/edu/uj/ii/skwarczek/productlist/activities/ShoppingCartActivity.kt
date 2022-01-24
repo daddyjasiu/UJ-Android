@@ -2,7 +2,6 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -16,12 +15,8 @@ import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ShoppingCartListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
-import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import pl.edu.uj.ii.skwarczek.productlist.utility.BackendHelper
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 import kotlin.random.Random
 
 class ShoppingCartActivity: AppCompatActivity() {
@@ -42,7 +37,7 @@ class ShoppingCartActivity: AppCompatActivity() {
         initRecyclerView()
 
         backArrowButton.setOnClickListener{
-            val intent = Intent(this, WishMakingActivity::class.java)
+            val intent = Intent(this, ProductListActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
             finish()
@@ -85,7 +80,7 @@ class ShoppingCartActivity: AppCompatActivity() {
             val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
             val randomId = Random.nextInt(0, Int.MAX_VALUE)
             placeOrderToCache(randomId, cartList)
-            BackendHelper.placeOrderToBackend(randomId, currentUser.uid)
+            BackendHelper.placeOrderToBackend(randomId, currentUser.uid, -1.0)
             getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
             Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
         }

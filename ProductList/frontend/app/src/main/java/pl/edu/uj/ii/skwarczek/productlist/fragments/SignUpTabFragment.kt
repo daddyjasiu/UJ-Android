@@ -16,7 +16,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.activities.WishMakingActivity
+import pl.edu.uj.ii.skwarczek.productlist.activities.ProductListActivity
 import pl.edu.uj.ii.skwarczek.productlist.models.CustomerModel
 import pl.edu.uj.ii.skwarczek.productlist.services.RetrofitService
 import retrofit2.Call
@@ -57,7 +57,7 @@ class SignUpTabFragment : Fragment(){
 
                             addCustomerToBackend(CustomerModel(firebaseUser.uid, firstName, surname, email, password))
 
-                            val intent = Intent(activity, WishMakingActivity::class.java)
+                            val intent = Intent(activity, ProductListActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }

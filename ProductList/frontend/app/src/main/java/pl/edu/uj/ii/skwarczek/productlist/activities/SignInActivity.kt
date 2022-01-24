@@ -19,7 +19,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.SignInAdapter
-import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
 class SignInActivity : AppCompatActivity() {
 
@@ -64,7 +63,7 @@ class SignInActivity : AppCompatActivity() {
             Log.w(TAG,"User is null, not going to navigate")
         }
         else{
-            startActivity(Intent(this, WishMakingActivity::class.java))
+            startActivity(Intent(this, ProductListActivity::class.java))
             finish()
         }
     }

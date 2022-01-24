@@ -79,7 +79,7 @@ interface RetrofitService {
     fun getAllOrdersCall() : Call<List<OrderModel>>
 
     @GET("order/customer/{customerId}")
-    fun getCustomerOrdersCall(@Path("customerId") customerId: String) : Call<List<OrderModel>>
+    fun getOrdersByCustomerIdCall(@Path("customerId") customerId: String) : Call<List<OrderModel>>
 
     @POST("order/{orderId}/{customerId}/{totalPrice}")
     fun postOrderAndOrderDetailsCall(@Path("orderId") orderId: Int, @Path("customerId") customerId: String, @Path("totalPrice") totalPrice: Double) : Call<Unit>
@@ -100,7 +100,7 @@ interface RetrofitService {
 
     companion object {
 
-        var BASE_URL = "https://0b75-185-58-160-75.ngrok.io"
+        var BASE_URL = "https://b21e-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 

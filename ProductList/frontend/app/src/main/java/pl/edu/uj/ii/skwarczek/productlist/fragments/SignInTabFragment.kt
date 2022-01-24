@@ -15,7 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.activities.WishMakingActivity
+import pl.edu.uj.ii.skwarczek.productlist.activities.ProductListActivity
 
 class SignInTabFragment : Fragment(){
 
@@ -41,7 +41,7 @@ class SignInTabFragment : Fragment(){
                     .addOnCompleteListener { task ->
                         if(task.isSuccessful){
                             Toast.makeText(activity, "Logged in successfully!", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(activity, WishMakingActivity::class.java)
+                            val intent = Intent(activity, ProductListActivity::class.java)
                             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                             startActivity(intent)
                         }
