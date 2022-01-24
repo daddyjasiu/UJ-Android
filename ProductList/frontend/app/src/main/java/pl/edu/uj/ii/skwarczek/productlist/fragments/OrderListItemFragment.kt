@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import pl.edu.uj.ii.skwarczek.productlist.R
 
-class OrdersListItemFragment : Fragment(){
+class OrderListItemFragment : Fragment(){
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

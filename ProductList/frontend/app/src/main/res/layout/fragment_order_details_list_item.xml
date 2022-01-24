@@ -22,10 +22,10 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/orders_list_item_order_name"
+            android:id="@+id/order_details_list_item_product_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="orderName"
+            android:text="productName"
             android:textSize="22sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -38,36 +38,35 @@
             android:scrollHorizontally="false"/>
 
         <TextView
-            android:id="@+id/orders_list_item_total_price"
+            android:id="@+id/order_details_list_item_product_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="totalPrice"
+            android:text="productDescription"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/orders_list_item_order_name"
+            app:layout_constraintTop_toBottomOf="@id/order_details_list_item_product_name"
             android:layout_weight="1"
             android:ellipsize="end"
             android:maxLines="2"
             android:scrollHorizontally="false"/>
 
         <TextView
-            android:id="@+id/orders_list_item_order_id"
+            android:id="@+id/order_details_list_item_product_id"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="orderId"
+            android:text="productId"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/orders_list_item_total_price"
+            app:layout_constraintTop_toBottomOf="@id/order_details_list_item_product_description"
             android:layout_weight="1"
             android:ellipsize="end"
-            android:maxLines="1"
+            android:maxLines="2"
             android:scrollHorizontally="false"/>
 
-
-
     </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

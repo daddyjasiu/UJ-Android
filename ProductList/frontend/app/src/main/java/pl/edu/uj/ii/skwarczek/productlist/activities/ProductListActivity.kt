@@ -15,7 +15,6 @@ import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.adapters.ProductListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.models.*
 import pl.edu.uj.ii.skwarczek.productlist.utility.BackendHelper
-import pl.edu.uj.ii.skwarczek.productlist.utility.Globals
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 import kotlin.random.Random
 
@@ -26,7 +25,7 @@ class ProductListActivity : AppCompatActivity() {
     private lateinit var wishDescription: EditText
     private lateinit var makeAWishButton: Button
     private lateinit var goToCartButton: Button
-    private lateinit var cartRecyclerView: RecyclerView
+    private lateinit var productsRecyclerView: RecyclerView
     private lateinit var settingsButton: Button
     private var productAdapter: ProductListAdapter? = null
     private lateinit var currentUser: FirebaseUser
@@ -38,7 +37,7 @@ class ProductListActivity : AppCompatActivity() {
         initView()
         initRecyclerView()
 
-        RealmHelper.syncDatabases(currentUser.uid)
+        //RealmHelper.syncDatabases(currentUser.uid)
 
         settingsButton.setOnClickListener {
             startActivity(Intent(this, SettingsActivity::class.java))
@@ -142,12 +141,6 @@ class ProductListActivity : AppCompatActivity() {
         wishName.requestFocus()
     }
 
-    private fun initRecyclerView(){
-        cartRecyclerView.layoutManager = LinearLayoutManager(this)
-        productAdapter = ProductListAdapter()
-        cartRecyclerView.adapter = productAdapter
-    }
-
     private fun initView(){
         auth = Firebase.auth
         currentUser = auth.currentUser!!
@@ -155,7 +148,13 @@ class ProductListActivity : AppCompatActivity() {
         wishDescription = findViewById(R.id.wish_description)
         makeAWishButton = findViewById(R.id.wish_button)
         goToCartButton = findViewById(R.id.go_to_cart_button)
-        cartRecyclerView = findViewById(R.id.product_list_recycler_view)
+        productsRecyclerView = findViewById(R.id.product_list_recycler_view)
         settingsButton = findViewById(R.id.settings_button)
+    }
+
+    private fun initRecyclerView(){
+        productsRecyclerView.layoutManager = LinearLayoutManager(this)
+        productAdapter = ProductListAdapter()
+        productsRecyclerView.adapter = productAdapter
     }
 }

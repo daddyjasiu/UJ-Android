@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import pl.edu.uj.ii.skwarczek.productlist.R
 import pl.edu.uj.ii.skwarczek.productlist.models.OrderRealmModel
 
-class OrdersListAdapter: RecyclerView.Adapter<OrdersListAdapter.OrderViewHolder>() {
+class OrderListAdapter: RecyclerView.Adapter<OrderListAdapter.OrderViewHolder>() {
     private var ordersList: List<OrderRealmModel> = emptyList()
     private var onClickItem: ((OrderRealmModel) -> Unit)? = null
 
@@ -36,12 +36,14 @@ class OrdersListAdapter: RecyclerView.Adapter<OrdersListAdapter.OrderViewHolder>
     }
 
     class OrderViewHolder(view: View) : RecyclerView.ViewHolder(view){
-        private var orderId = view.findViewById<TextView>(R.id.orders_list_item_order_id)
+        private var orderName = view.findViewById<TextView>(R.id.orders_list_item_order_name)
         private var orderTotalPrice = view.findViewById<TextView>(R.id.orders_list_item_total_price)
+        private var orderId = view.findViewById<TextView>(R.id.orders_list_item_order_id)
 
         fun bindView(order: OrderRealmModel){
-            orderId.text = order.id.toString()
+            orderName.text = order.name
             orderTotalPrice.text = order.totalPrice.toString()
+            orderId.text = order.id.toString()
         }
     }
 }

@@ -65,12 +65,12 @@ object BackendHelper {
         })
     }
 
-    fun placeOrderToBackend(randomId: Int, customerId: String, totalPrice: Double){
+    fun placeOrderToBackend(randomId: Int, orderName: String, customerId: String, totalPrice: Double){
 
-        val order = OrderModel(randomId, customerId, totalPrice)
+        val order = OrderModel(randomId, orderName, customerId, totalPrice)
 
         val service = RetrofitService.create()
-        val call = service.postOrderAndOrderDetailsCall(order.id, order.customerId, order.totalPrice)
+        val call = service.postOrderAndOrderDetailsCall(order.id, order.name, order.customerId, order.totalPrice)
         call.enqueue(object : Callback<Unit?> {
             override fun onResponse(call: Call<Unit?>, response: Response<Unit?>) {
                 if(response.isSuccessful) {
@@ -104,7 +104,7 @@ object BackendHelper {
     }
 
     fun getOrdersByCustomerIdFromBackend(){
-        
+
     }
 
 }

@@ -32,12 +32,13 @@ fun Route.orderRouting() {
             call.respond(updateOrder(order))
         }
 
-        post("/{order_id}/{customer_id}/{total_price}") {
+        post("/{order_id}/{order_name}/{customer_id}/{total_price}") {
             val orderId = call.parameters["order_id"]
+            val orderName = call.parameters["order_name"]
             val customerId = call.parameters["customer_id"]
             val price = call.parameters["total_price"]
-            if(orderId != null && customerId != null && price != null)
-                call.respond(placeOrder(orderId.toInt(), customerId.toString(), price.toDouble()))
+            if(orderId != null && orderName != null && customerId != null && price != null)
+                call.respond(placeOrder(orderId.toInt(), orderName.toString(),  customerId.toString(), price.toDouble()))
         }
 
         // deletes an order by given id

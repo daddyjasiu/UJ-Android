@@ -26,6 +26,7 @@
             android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".activities.ShoppingCartActivity"/>
         <activity android:name=".activities.OrdersActivity"/>
+        <activity android:name=".activities.OrderDetailsActivity"/>
     </application>
 
 </manifest>

@@ -144,6 +144,13 @@ object RealmHelper {
             .findAll()
     }
 
+    fun getOrderDetailsByOrderId(orderId: Int) : List<OrderDetailsRealmModel>{
+        return Realm.getDefaultInstance()
+            .where(OrderDetailsRealmModel::class.java)
+            .equalTo("orderId", orderId)
+            .findAll()
+    }
+
     fun syncDatabases(customerId: String){
         //Syncing Products
         val productListCache = getAllProductsByCustomerId(customerId)
@@ -196,14 +203,14 @@ object RealmHelper {
         if(orderListCacheCount != orderListBackendCount){
             if(orderListCacheCount < orderListBackendCount){
                 for(order in orderListBackend){
-                    val o = OrderRealmModel(order.id, order.customerId, order.totalPrice)
+                    val o = OrderRealmModel(order.id, order.name, order.customerId, order.totalPrice)
                     placeOrder(o)
                 }
             }
             else if(orderListCacheCount > orderListBackendCount){
                 for(order in orderListCache){
-                    val o = OrderModel(order.id, order.customerId, order.totalPrice)
-                    BackendHelper.placeOrderToBackend(o.id, o.customerId, o.totalPrice)
+                    val o = OrderModel(order.id, order.name, order.customerId, order.totalPrice)
+                    BackendHelper.placeOrderToBackend(o.id, o.name, o.customerId, o.totalPrice)
                 }
             }
         }

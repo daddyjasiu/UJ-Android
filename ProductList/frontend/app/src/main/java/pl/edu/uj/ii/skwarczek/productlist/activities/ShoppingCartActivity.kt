@@ -1,8 +1,11 @@
 package pl.edu.uj.ii.skwarczek.productlist.activities
 
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.text.InputType
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -74,15 +77,31 @@ class ShoppingCartActivity: AppCompatActivity() {
     private fun placeOrder(){
 
         val alert = AlertDialog.Builder(this)
-        alert.setMessage("Are you sure you want to place an order? \n\nIt cannot be canceled!")
+        val input = EditText(this)
+
+        input.hint = "Order name"
+        input.inputType = InputType.TYPE_CLASS_TEXT
+        alert.setView(input)
+
+        alert.setTitle("Are you sure you want to place an order?")
         alert.setCancelable(true)
+
         alert.setPositiveButton("Yes") { _, _ ->
-            val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
-            val randomId = Random.nextInt(0, Int.MAX_VALUE)
-            placeOrderToCache(randomId, cartList)
-            BackendHelper.placeOrderToBackend(randomId, currentUser.uid, -1.0)
-            getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
-            Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
+            val orderNameText = input.text.toString()
+
+            if(orderNameText.isNotEmpty()){
+                val cartList = RealmHelper.getShoppingCartsByCustomerId(currentUser.uid)
+                val randomId = Random.nextInt(0, Int.MAX_VALUE)
+
+                placeOrderToCache(randomId, orderNameText, cartList)
+                BackendHelper.placeOrderToBackend(randomId, orderNameText, currentUser.uid, -1.0)
+                getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
+
+                Toast.makeText(this, "Order placed!", Toast.LENGTH_SHORT).show()
+            }
+            else{
+                Toast.makeText(this, "Please enter order name", Toast.LENGTH_SHORT).show()
+            }
         }
         alert.setNegativeButton("No") { dialog, _ ->
             dialog.dismiss()
@@ -90,13 +109,13 @@ class ShoppingCartActivity: AppCompatActivity() {
         alert.show()
     }
 
-    private fun placeOrderToCache(randomId: Int, cartList: List<ShoppingCartRealmModel>){
+    private fun placeOrderToCache(randomId: Int, orderName: String, cartList: List<ShoppingCartRealmModel>){
 
-        val order = OrderRealmModel(randomId, currentUser.uid)
+        val order = OrderRealmModel(randomId, orderName, currentUser.uid)
         RealmHelper.placeOrder(order)
 
         for(cart in cartList){
-            val orderDetails = OrderDetailsRealmModel(order.id, cart.productId)
+            val orderDetails = OrderDetailsRealmModel(order.id, cart.productId, cart.productName, cart.productDescription)
             RealmHelper.placeOrderDetails(orderDetails)
         }
         RealmHelper.deleteAllShoppingCartsByCustomerId(currentUser.uid)

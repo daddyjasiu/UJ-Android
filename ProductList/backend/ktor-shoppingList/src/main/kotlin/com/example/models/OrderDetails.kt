@@ -6,16 +6,23 @@ import org.jetbrains.exposed.sql.transactions.transaction
 data class OrderDetails(
     val orderId : Int,
     val productId : Int,
+    val productName: String = "",
+    val productDescription: String = "",
     )
 
 object OrderDetailsTable : Table() {
     val orderId = integer("orderId").references(OrderTable.id)
     val productId = integer("productId").references(ProductTable.id)
+
+    val productName = varchar("productName", 100)
+    val productDescription = varchar("productDescription", 2000)
 }
 
 fun ResultRow.toOrderDetails() = OrderDetails(
     orderId = this[OrderDetailsTable.orderId],
     productId = this[OrderDetailsTable.productId],
+    productName = this[OrderDetailsTable.productName],
+    productDescription = this[OrderDetailsTable.productDescription]
 )
 
 fun getAllOrderDetails() : List<OrderDetails> {
@@ -32,12 +39,14 @@ fun getOrderDetailsByOrderId(orderId : Int) : List<OrderDetails> {
     }
 }
 
-fun insertOrderDetailsRow(orderId: Int, productId: Int) {
+fun insertOrderDetailsRow(orderId: Int, productId: Int, productName: String, productDescription: String) {
     transaction {
         try{
             OrderDetailsTable.insert {
                 it[OrderDetailsTable.orderId] = orderId
                 it[OrderDetailsTable.productId] = productId
+                it[OrderDetailsTable.productName] = productName
+                it[OrderDetailsTable.productDescription] = productName
             }
         }
         catch (e: Exception){

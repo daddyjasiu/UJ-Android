@@ -11,15 +11,14 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import pl.edu.uj.ii.skwarczek.productlist.R
-import pl.edu.uj.ii.skwarczek.productlist.adapters.OrdersListAdapter
-import pl.edu.uj.ii.skwarczek.productlist.utility.BackendHelper
+import pl.edu.uj.ii.skwarczek.productlist.adapters.OrderListAdapter
 import pl.edu.uj.ii.skwarczek.productlist.utility.RealmHelper
 
 class OrdersActivity: AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var ordersRecyclerView: RecyclerView
-    private var ordersAdapter: OrdersListAdapter? = null
+    private var ordersAdapter: OrderListAdapter? = null
     private lateinit var backArrowButton: Button
     private lateinit var currentUser: FirebaseUser
 
@@ -30,22 +29,21 @@ class OrdersActivity: AppCompatActivity() {
         initView()
         initRecyclerView()
 
+        ordersAdapter?.setOnClickItem {
+            val intent = Intent(this, OrderDetailsActivity::class.java)
+            intent.putExtra("orderId", it.id)
+            startActivity(intent)
+        }
+
         backArrowButton.setOnClickListener{
             val intent = Intent(this, ShoppingCartActivity::class.java)
             startActivity(intent)
             finish()
         }
 
-        getOrdersByCustomerId()
-    }
-
-    private fun getOrdersByCustomerId(){
         getOrdersByCustomerIdFromCache()
-        BackendHelper.getOrdersByCustomerIdFromBackend()
-
-
-
     }
+
 
     private fun getOrdersByCustomerIdFromCache(){
         val ordersList = RealmHelper.getOrdersByCustomerId(currentUser.uid)
@@ -61,7 +59,7 @@ class OrdersActivity: AppCompatActivity() {
 
     private fun initRecyclerView(){
         ordersRecyclerView.layoutManager = LinearLayoutManager(this)
-        ordersAdapter = OrdersListAdapter()
+        ordersAdapter = OrderListAdapter()
         ordersRecyclerView.adapter = ordersAdapter
     }
 

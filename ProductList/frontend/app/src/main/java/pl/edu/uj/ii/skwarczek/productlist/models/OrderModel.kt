@@ -5,6 +5,7 @@ import io.realm.annotations.PrimaryKey
 
 data class OrderModel(
     var id: Int = 0,
+    var name: String = "",
     var customerId: String = "",
     var totalPrice: Double = -1.0
 )
@@ -12,6 +13,7 @@ data class OrderModel(
 open class OrderRealmModel(
     @PrimaryKey
     var id: Int = 0,
+    var name: String = "",
     var customerId: String = "",
     var totalPrice: Double = -1.0
 ) : RealmObject()
