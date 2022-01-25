@@ -27,7 +27,6 @@ class ShoppingCartActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var cartRecyclerView: RecyclerView
     private var shoppingCartAdapter: ShoppingCartListAdapter? = null
-    private lateinit var backArrowButton: Button
     private lateinit var goToOrdersButton: Button
     private lateinit var placeOrderButton: Button
     private lateinit var currentUser: FirebaseUser
@@ -37,14 +36,8 @@ class ShoppingCartActivity: AppCompatActivity() {
         setContentView(R.layout.activity_shopping_cart)
 
         initView()
+        initActionBar()
         initRecyclerView()
-
-        backArrowButton.setOnClickListener{
-            val intent = Intent(this, ProductListActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
-            finish()
-        }
 
         placeOrderButton.setOnClickListener {
             placeOrder()
@@ -53,7 +46,6 @@ class ShoppingCartActivity: AppCompatActivity() {
         goToOrdersButton.setOnClickListener {
             val intent = Intent(this, OrdersActivity::class.java)
             startActivity(intent)
-            finish()
         }
 
         shoppingCartAdapter?.setOnClickDeleteButton {
@@ -73,6 +65,16 @@ class ShoppingCartActivity: AppCompatActivity() {
         getShoppingCartItemsByCustomerIdFromCache(currentUser.uid)
     }
 
+    private fun initActionBar(){
+        val actionBar = supportActionBar
+        actionBar!!.title = "Your shopping cart"
+        actionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
 
     private fun placeOrder(){
 
@@ -141,13 +143,13 @@ class ShoppingCartActivity: AppCompatActivity() {
             dialog.dismiss()
         }
         alert.show()
+
     }
 
     private fun initView(){
         auth = Firebase.auth
         currentUser = auth.currentUser!!
         cartRecyclerView = findViewById(R.id.shopping_cart_recycler_view)
-        backArrowButton = findViewById(R.id.back_arrow_cart_button)
         placeOrderButton = findViewById(R.id.place_order_button)
         goToOrdersButton = findViewById(R.id.go_to_orders_button)
     }

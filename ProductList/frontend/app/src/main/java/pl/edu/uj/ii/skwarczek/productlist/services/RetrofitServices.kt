@@ -100,7 +100,7 @@ interface RetrofitService {
 
     companion object {
 
-        var BASE_URL = "https://2799-185-58-160-75.ngrok.io"
+        var BASE_URL = "https://a0e6-185-58-160-75.ngrok.io"
 
         fun create() : RetrofitService {
 

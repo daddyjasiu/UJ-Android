@@ -21,7 +21,6 @@ class OrderDetailsActivity : AppCompatActivity() {
     private lateinit var currentUser: FirebaseUser
     private lateinit var orderDetailsRecyclerView: RecyclerView
     private var orderDetailsAdapter: OrderDetailsAdapter? = null
-    private lateinit var backArrowButton: Button
     private var orderId: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +28,7 @@ class OrderDetailsActivity : AppCompatActivity() {
         setContentView(R.layout.activity_order_details)
 
         initView()
+        initActionBar()
         initRecyclerView()
 
         orderDetailsAdapter?.setOnClickItem {
@@ -41,15 +41,20 @@ class OrderDetailsActivity : AppCompatActivity() {
             alert.show()
         }
 
-        backArrowButton.setOnClickListener{
-            val intent = Intent(this, OrdersActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
         orderId = intent.getIntExtra("orderId", orderId)
 
         getOrderDetailsByCustomerIdFromCache(orderId)
+    }
+
+    private fun initActionBar(){
+        val actionBar = supportActionBar
+        actionBar!!.title = "Order details"
+        actionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
     }
 
     private fun getOrderDetailsByCustomerIdFromCache(orderId: Int){
@@ -66,7 +71,6 @@ class OrderDetailsActivity : AppCompatActivity() {
         auth = Firebase.auth
         currentUser = auth.currentUser!!
         orderDetailsRecyclerView = findViewById(R.id.order_details_list_recycler_view)
-        backArrowButton = findViewById(R.id.back_arrow_order_details_button)
     }
 
     private fun initRecyclerView(){

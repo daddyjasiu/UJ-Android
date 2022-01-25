@@ -2,6 +2,7 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -85,7 +86,6 @@ class ProductListActivity : AppCompatActivity() {
             deleteProduct(it.id, currentUser.uid, true)
         }
 
-        getProductsByCustomerIdFromCache(currentUser.uid)
     }
 
     private fun addProductToCart(product: ProductRealmModel){

@@ -19,7 +19,6 @@ class OrdersActivity: AppCompatActivity() {
     private lateinit var auth: FirebaseAuth
     private lateinit var ordersRecyclerView: RecyclerView
     private var ordersAdapter: OrderListAdapter? = null
-    private lateinit var backArrowButton: Button
     private lateinit var currentUser: FirebaseUser
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -27,6 +26,7 @@ class OrdersActivity: AppCompatActivity() {
         setContentView(R.layout.activity_orders)
 
         initView()
+        initActionBar()
         initRecyclerView()
 
         ordersAdapter?.setOnClickItem {
@@ -35,15 +35,19 @@ class OrdersActivity: AppCompatActivity() {
             startActivity(intent)
         }
 
-        backArrowButton.setOnClickListener{
-            val intent = Intent(this, ShoppingCartActivity::class.java)
-            startActivity(intent)
-            finish()
-        }
-
         getOrdersByCustomerIdFromCache()
     }
 
+    private fun initActionBar(){
+        val actionBar = supportActionBar
+        actionBar!!.title = "Your orders"
+        actionBar.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return super.onSupportNavigateUp()
+    }
 
     private fun getOrdersByCustomerIdFromCache(){
         val ordersList = RealmHelper.getOrdersByCustomerId(currentUser.uid)
@@ -54,7 +58,6 @@ class OrdersActivity: AppCompatActivity() {
         auth = Firebase.auth
         currentUser = auth.currentUser!!
         ordersRecyclerView = findViewById(R.id.orders_recycler_view)
-        backArrowButton = findViewById(R.id.back_arrow_orders_button)
     }
 
     private fun initRecyclerView(){
