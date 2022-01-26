@@ -27,7 +27,7 @@ class SignUpTabFragment : Fragment(){
 
     private lateinit var auth: FirebaseAuth
     private lateinit var signUpFirstNameField: EditText
-    private lateinit var signUpSurnameField: EditText
+    private lateinit var signUpLastNameField: EditText
     private lateinit var signUpEmailField: EditText
     private lateinit var signUpPasswordField: EditText
     private lateinit var signUpButton: Button
@@ -44,7 +44,7 @@ class SignUpTabFragment : Fragment(){
             if(signUpEmailField.text.toString().trim().isNotEmpty() && signUpPasswordField.text.toString().trim().isNotEmpty()){
 
                 val firstName = signUpFirstNameField.text.trim().toString()
-                val surname = signUpSurnameField.text.trim().toString()
+                val surname = signUpLastNameField.text.trim().toString()
                 val email = signUpEmailField.text.trim().toString()
                 val password = signUpPasswordField.text.trim().toString()
 
@@ -95,7 +95,7 @@ class SignUpTabFragment : Fragment(){
         auth = Firebase.auth
         signUpButton = view.findViewById(R.id.sign_up_button)
         signUpFirstNameField = view.findViewById(R.id.sign_up_first_name_edit_text)
-        signUpSurnameField = view.findViewById(R.id.sign_up_surname_edit_text)
+        signUpLastNameField = view.findViewById(R.id.sign_up_last_name_edit_text)
         signUpEmailField = view.findViewById(R.id.sign_up_email_edit_text)
         signUpPasswordField = view.findViewById(R.id.sign_up_password_edit_text)
     }
