@@ -2,6 +2,7 @@ package pl.edu.uj.ii.skwarczek.productlist.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
@@ -40,9 +41,9 @@ class ProductListActivity : AppCompatActivity() {
 
         //RealmHelper.syncDatabases(currentUser.uid)
 
-        settingsButton.setOnClickListener {
-            startActivity(Intent(this, SettingsActivity::class.java))
-        }
+//        settingsButton.setOnClickListener {
+//            startActivity(Intent(this, SettingsActivity::class.java))
+//        }
 
         makeAWishButton.setOnClickListener{
 
@@ -86,6 +87,38 @@ class ProductListActivity : AppCompatActivity() {
             deleteProduct(it.id, currentUser.uid, true)
         }
 
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_details, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.find_us_menu_item -> {
+                val intent = Intent(this, MapsActivity::class.java)
+                startActivity(intent)
+            }
+
+            R.id.sign_out_menu_item -> {
+                AlertDialog.Builder(this)
+                    .setTitle("Sign out")
+                    .setMessage("Do you really want to sign out?")
+                    .setNegativeButton("No") { dialogInterface, _ ->
+                        dialogInterface.dismiss()
+                    }
+                    .setPositiveButton("Yes") { _, _ ->
+                        auth.signOut()
+                        val signOutIntent = Intent(this, SignInActivity::class.java)
+                        signOutIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        startActivity(signOutIntent)
+                    }
+                    .show()
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     private fun addProductToCart(product: ProductRealmModel){
@@ -149,7 +182,7 @@ class ProductListActivity : AppCompatActivity() {
         makeAWishButton = findViewById(R.id.wish_button)
         goToCartButton = findViewById(R.id.go_to_cart_button)
         productsRecyclerView = findViewById(R.id.product_list_recycler_view)
-        settingsButton = findViewById(R.id.settings_button)
+        //settingsButton = findViewById(R.id.settings_button)
     }
 
     private fun initRecyclerView(){
